@@ -1,23 +1,43 @@
 {
-  "name": "alex.api.server",
-  "version": "1.0.0",
-  "description": "",
+  "name": "company_crud_app_backend",
+  "version": "2.0.0",
+  "description": "Company CRUD application backend",
   "main": "app.js",
   "scripts": {
-    "dev": "nodemon app.js",
-    "start": "node app.js"
+    "dev": "cross-env NODE_ENV=development nodemon ./src/app.js",
+    "prod": "cross-env NODE_ENV=production node ./src/app.js",
+    "db:seed:all:development": "cross-env NODE_ENV=development node ./node_modules/sequelize-cli/lib/sequelize db:seed:all",
+    "db:seed:undo:development": "cross-env NODE_ENV=development node ./node_modules/sequelize-cli/lib/sequelize db:seed:undo:all",
+    "db:migrate:up:development": "cross-env NODE_ENV=development node ./node_modules/sequelize-cli/lib/sequelize db:migrate",
+    "db:migrate:undo:development": "cross-env NODE_ENV=development node ./node_modules/sequelize-cli/lib/sequelize db:migrate:undo:all",
+    "db:seed:all:production": "cross-env NODE_ENV=production node ./node_modules/sequelize-cli/lib/sequelize db:seed:all",
+    "db:seed:undo:production": "cross-env NODE_ENV=production node ./node_modules/sequelize-cli/lib/sequelize db:seed:undo:all",
+    "db:migrate:up:production": "cross-env NODE_ENV=production node ./node_modules/sequelize-cli/lib/sequelize db:migrate",
+    "db:migrate:undo:production": "cross-env NODE_ENV=production node ./node_modules/sequelize-cli/lib/sequelize db:migrate:undo:all"
   },
   "type": "module",
-  "keywords": [],
-  "author": "",
-  "license": "ISC",
-  "devDependencies": {
-    "nodemon": "^3.0.1"
-  },
   "dependencies": {
     "body-parser": "^1.20.2",
     "cors": "^2.8.5",
+    "dotenv": "^16.4.5",
     "express": "^4.18.2",
-    "mysql2": "^3.6.2"
-  }
+    "mysql2": "^3.6.2",
+    "sequelize": "^6.37.1",
+    "swagger-autogen": "^2.23.7",
+    "swagger-ui-express": "^5.0.0"
+  },
+  "devDependencies": {
+    "@babel/core": "^7.24.0",
+    "@babel/register": "^7.23.7",
+    "cross-env": "^7.0.3",
+    "nodemon": "^3.0.1",
+    "sequelize-cli": "^6.6.2"
+  },
+  "keywords": [],
+  "author": "Yunus Ashyrov <contact@yunus-mil.ru> (https://github.com/yunusmi)",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/yunusmi/company_crud_app_backend.git"
+  },
+  "license": "MIT"
 }
