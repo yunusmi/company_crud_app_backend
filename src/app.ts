@@ -2,8 +2,9 @@ import http from 'http';
 import express from 'express';
 import cors from 'cors';
 import * as dotenv from 'dotenv';
-import { routes } from './routes/index.js';
-import { sequelize } from './connector/index.js';
+import { routes } from './routes';
+import { sequelize } from './connector';
+import { ResponseError, errorHandler } from './middlewares/errorHandler';
 
 dotenv.config();
 
@@ -11,6 +12,7 @@ const app = express();
 app.use(express.json());
 
 app.use(cors());
+
 app.use(routes);
 
 sequelize
@@ -29,10 +31,15 @@ app.use((req, res, next) => {
 });
 
 app.use((req, res, next) => {
-  const error = new Error(`${req.method} ${req.originalUrl} не найден`);
+  const error: ResponseError = new Error(
+    `${req.method} ${req.originalUrl} не найден`
+  );
+
   error.statusCode = 404;
   next(error);
 });
+
+app.use(errorHandler);
 
 const PORT = process.env.APP_PORT || 3000;
 const HOST = process.env.APP_HOST || 'localhost';

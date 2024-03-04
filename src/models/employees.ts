@@ -1,7 +1,12 @@
 import { DataTypes, Model } from 'sequelize';
-import { sequelize } from '../connector/index.js';
+import { sequelize } from '../connector';
 
-class Employees extends Model {}
+class Employees extends Model {
+  public employee_id!: number;
+  public first_name!: string;
+  public last_name!: string;
+  public branch_id!: number;
+}
 
 Employees.init(
   {

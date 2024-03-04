@@ -1,4 +1,4 @@
-import { SalesModel } from '../services/sales.service.js';
+import { SalesService } from '../services/sales.service.js';
 
 export class SalesController {
   constructor() {

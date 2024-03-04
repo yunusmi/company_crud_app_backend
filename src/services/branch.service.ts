@@ -1,9 +1,9 @@
 import { pool } from '../config/database.js';
 
-export class BranchModel {
+export class BranchService {
   createBranch = (branchData) => {
     return new Promise((resolve, reject) => {
-      const query = "INSERT INTO Branches (branch_name) VALUES (?)";
+      const query = 'INSERT INTO Branches (branch_name) VALUES (?)';
       const values = [branchData.branch_name];
       pool.execute(query, values, (err, result) => {
         if (err) {
@@ -18,7 +18,7 @@ export class BranchModel {
 
   getAllBranches = () => {
     return new Promise((resolve, reject) => {
-      const query = "SELECT * FROM Branches";
+      const query = 'SELECT * FROM Branches';
       pool.execute(query, (err, result) => {
         if (err) {
           console.error('Ошибка при выполнении запроса:', err);
@@ -32,7 +32,7 @@ export class BranchModel {
 
   getBranchById = (branchId) => {
     return new Promise((resolve, reject) => {
-      const query = "SELECT * FROM Branches WHERE branch_id = ?";
+      const query = 'SELECT * FROM Branches WHERE branch_id = ?';
       pool.execute(query, [branchId], (err, result) => {
         if (err) {
           console.error('Ошибка при выполнении запроса:', err);
@@ -50,7 +50,7 @@ export class BranchModel {
 
   updateBranchById = (branchId, newBranchData) => {
     return new Promise((resolve, reject) => {
-      const query = "UPDATE Branches SET branch_name = ? WHERE branch_id = ?";
+      const query = 'UPDATE Branches SET branch_name = ? WHERE branch_id = ?';
       const values = [newBranchData.branch_name, branchId];
       pool.execute(query, values, (err, result) => {
         if (err) {
@@ -65,7 +65,7 @@ export class BranchModel {
 
   deleteBranchById = (branchId) => {
     return new Promise((resolve, reject) => {
-      const query = "DELETE FROM Branches WHERE branch_id = ?";
+      const query = 'DELETE FROM Branches WHERE branch_id = ?';
       pool.execute(query, [branchId], (err, result) => {
         if (err) {
           console.error('Ошибка при удалении филиала:', err);

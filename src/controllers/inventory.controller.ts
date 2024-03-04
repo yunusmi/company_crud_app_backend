@@ -1,4 +1,4 @@
-import { InventoryModel } from '../services/inventory.service.js';
+import { InventoryService } from '../services/inventory.service.js';
 
 export class InventoryController {
   constructor() {

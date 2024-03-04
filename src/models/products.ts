@@ -1,7 +1,12 @@
 import { DataTypes, Model } from 'sequelize';
-import { sequelize } from '../connector/index.js';
+import { sequelize } from '../connector';
 
-class Products extends Model {}
+class Products extends Model {
+  public product_id!: number;
+  public product_name!: string;
+  public price!: number;
+  public branch_id!: number;
+}
 
 Products.init(
   {

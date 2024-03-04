@@ -1,8 +1,8 @@
-import { sequelize } from '../connector/index.js';
-import { Branches } from './branches.js';
-import { Employees } from './employees.js';
-import { Inventory } from './inventory.js';
-import { Products } from './products.js';
+import { sequelize } from '../connector';
+import { Branches } from './branches';
+import { Employees } from './employees';
+import { Inventory } from './inventory';
+import { Products } from './products';
 import { Sales } from './sales';
 
 const db = {

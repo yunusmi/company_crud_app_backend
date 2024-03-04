@@ -1,6 +1,6 @@
 import { ConnectionError, Sequelize } from 'sequelize';
 import * as dotenv from 'dotenv';
-import { db } from '../config/database.js';
+import { db } from '../config/database';
 
 dotenv.config();
 
@@ -11,7 +11,7 @@ const sequelize = new Sequelize(
   dbConfig.username,
   dbConfig.password,
   {
-    host: dbConfig.server,
+    host: dbConfig.host,
     dialect: dbConfig.dialect,
     retry: {
       match: [/Deadlock/i, ConnectionError],

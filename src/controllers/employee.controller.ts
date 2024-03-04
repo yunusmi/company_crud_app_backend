@@ -1,4 +1,4 @@
-import { EmployeeModel } from '../services/employee.service.js';
+import { EmployeeService } from '../services/employee.service.js';
 
 export class EmployeeController {
   constructor() {

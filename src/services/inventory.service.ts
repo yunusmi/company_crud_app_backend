@@ -1,9 +1,10 @@
 import { pool } from '../config/database.js';
 
-export class InventoryModel {
+export class InventoryService {
   createInventoryItem = (product_id, quantity_in_stock) => {
     return new Promise((resolve, reject) => {
-      const query = "INSERT INTO Inventory (product_id, quantity_in_stock) VALUES (?, ?)";
+      const query =
+        'INSERT INTO Inventory (product_id, quantity_in_stock) VALUES (?, ?)';
       const values = [product_id, quantity_in_stock];
       pool.execute(query, values, (err, result) => {
         if (err) {
@@ -18,7 +19,7 @@ export class InventoryModel {
 
   getAllInventoryItems = () => {
     return new Promise((resolve, reject) => {
-      const query = "SELECT * FROM Inventory";
+      const query = 'SELECT * FROM Inventory';
       pool.execute(query, (err, result) => {
         if (err) {
           console.error('Ошибка при выполнении запроса:', err);
@@ -32,7 +33,8 @@ export class InventoryModel {
 
   getInventoryItemById = (inventoryId) => {
     return new Promise((resolve, reject) => {
-      const query = "SELECT * FROM Inventory WHERE product_id = ? AND quantity_in_stock > 0";
+      const query =
+        'SELECT * FROM Inventory WHERE product_id = ? AND quantity_in_stock > 0';
       pool.execute(query, [inventoryId], (err, result) => {
         if (err) {
           console.error('Ошибка при выполнении запроса:', err);
@@ -50,7 +52,8 @@ export class InventoryModel {
 
   updateInventoryItemById = (inventoryId, newQuantity) => {
     return new Promise((resolve, reject) => {
-      const query = "UPDATE Inventory SET quantity_in_stock = ? WHERE inventory_id = ?";
+      const query =
+        'UPDATE Inventory SET quantity_in_stock = ? WHERE inventory_id = ?';
       const values = [newQuantity, inventoryId];
       pool.execute(query, values, (err, result) => {
         if (err) {
@@ -65,7 +68,7 @@ export class InventoryModel {
 
   deleteInventoryItemById = (inventoryId) => {
     return new Promise((resolve, reject) => {
-      const query = "DELETE FROM Inventory WHERE inventory_id = ?";
+      const query = 'DELETE FROM Inventory WHERE inventory_id = ?';
       pool.execute(query, [inventoryId], (err, result) => {
         if (err) {
           console.error('Ошибка при удалении записи инвентаря:', err);

@@ -1,11 +1,15 @@
 import { DataTypes, Model } from 'sequelize';
-import { sequelize } from '../connector/index.js';
+import { sequelize } from '../connector';
 
-class Sales extends Model {}
+class Inventory extends Model {
+  public inventory_id!: number;
+  public product_id!: number;
+  public quantity_in_stock!: number;
+}
 
-Sales.init(
+Inventory.init(
   {
-    sale_id: {
+    inventory_id: {
       type: DataTypes.INTEGER,
       primaryKey: true,
       autoIncrement: true,
@@ -14,26 +18,18 @@ Sales.init(
       type: DataTypes.INTEGER,
       allowNull: true,
     },
-    employee_id: {
-      type: DataTypes.INTEGER,
-      allowNull: true,
-    },
-    sale_date: {
-      type: DataTypes.STRING(50),
-      allowNull: true,
-    },
-    quantity: {
+    quantity_in_stock: {
       type: DataTypes.INTEGER,
       allowNull: true,
     },
   },
   {
     sequelize,
-    modelName: 'Sales',
+    modelName: 'inventory',
     timestamps: false,
     createdAt: false,
     updatedAt: false,
   }
 );
 
-export { Sales };
+export { Inventory };

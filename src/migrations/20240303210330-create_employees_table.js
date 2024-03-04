@@ -16,10 +16,6 @@ module.exports = {
       },
       branch_id: {
         type: Sequelize.INTEGER,
-        references: {
-          model: 'branches',
-          key: 'branch_id',
-        },
       },
     });
   },

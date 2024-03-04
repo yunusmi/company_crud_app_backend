@@ -1,4 +1,4 @@
-import { BranchModel } from '../services/branch.service.js';
+import { BranchService } from '../services/branch.service';
 
 export class BranchController {
   constructor(branchModel) {

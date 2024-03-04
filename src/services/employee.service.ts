@@ -1,10 +1,15 @@
 import { pool } from '../config/database.js';
 
-export class EmployeeModel {
+export class EmployeeService {
   createEmployee = (employeeData) => {
     return new Promise((resolve, reject) => {
-      const query = "INSERT INTO Employees (first_name, last_name, branch_id) VALUES (?, ?, ?)";
-      const values = [employeeData.first_name, employeeData.last_name, employeeData.branch_id];
+      const query =
+        'INSERT INTO Employees (first_name, last_name, branch_id) VALUES (?, ?, ?)';
+      const values = [
+        employeeData.first_name,
+        employeeData.last_name,
+        employeeData.branch_id,
+      ];
       pool.execute(query, values, (err, result) => {
         if (err) {
           console.error('Ошибка при создании сотрудника:', err);
@@ -36,7 +41,7 @@ export class EmployeeModel {
 
   getEmployeeById = (employeeId) => {
     return new Promise((resolve, reject) => {
-      const query = "SELECT * FROM Employees WHERE employee_id = ?";
+      const query = 'SELECT * FROM Employees WHERE employee_id = ?';
       pool.execute(query, [employeeId], (err, result) => {
         if (err) {
           console.error('Ошибка при выполнении запроса:', err);
@@ -54,7 +59,7 @@ export class EmployeeModel {
 
   getEmployeesByBranchId = (branchId) => {
     return new Promise((resolve, reject) => {
-      const query = "SELECT * FROM Employees WHERE branch_id = ?";
+      const query = 'SELECT * FROM Employees WHERE branch_id = ?';
       pool.execute(query, [branchId], (err, result) => {
         if (err) {
           console.error('Ошибка при выполнении запроса:', err);
@@ -68,8 +73,14 @@ export class EmployeeModel {
 
   updateEmployeeById = (employeeId, newEmployeeData) => {
     return new Promise((resolve, reject) => {
-      const query = "UPDATE Employees SET first_name = ?, last_name = ?, branch_id = ? WHERE employee_id = ?";
-      const values = [newEmployeeData.first_name, newEmployeeData.last_name, newEmployeeData.branch_id, employeeId];
+      const query =
+        'UPDATE Employees SET first_name = ?, last_name = ?, branch_id = ? WHERE employee_id = ?';
+      const values = [
+        newEmployeeData.first_name,
+        newEmployeeData.last_name,
+        newEmployeeData.branch_id,
+        employeeId,
+      ];
       pool.execute(query, values, (err, result) => {
         if (err) {
           console.error('Ошибка при обновлении сотрудника:', err);
@@ -83,7 +94,7 @@ export class EmployeeModel {
 
   deleteEmployeeById = (employeeId) => {
     return new Promise((resolve, reject) => {
-      const query = "DELETE FROM Employees WHERE employee_id = ?";
+      const query = 'DELETE FROM Employees WHERE employee_id = ?';
       pool.execute(query, [employeeId], (err, result) => {
         if (err) {
           console.error('Ошибка при удалении сотрудника:', err);

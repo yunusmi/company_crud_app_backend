@@ -1,7 +1,10 @@
 import { DataTypes, Model } from 'sequelize';
-import { sequelize } from '../connector/index.js';
+import { sequelize } from '../connector';
 
-class Branches extends Model {}
+class Branches extends Model {
+  public branch_id!: number;
+  public branch_name!: string;
+}
 
 Branches.init(
   {
