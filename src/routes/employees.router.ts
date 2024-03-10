@@ -1,17 +1,33 @@
 import { Router } from 'express';
-import { EmployeeController } from '../controllers/employee.controller.js';
-const employeeController = new EmployeeController();
+import { EmployeeController } from '../controllers/employees.controller';
+import { EmployeeService } from '../services/employees.service';
+const employeeController = new EmployeeController(new EmployeeService());
 
 const employeesRouter = Router();
 
-employeesRouter.post('/employees', employeeController.createEmployee);
-employeesRouter.get('/employees', employeeController.getAllEmployees);
-employeesRouter.get('/employees/:id', employeeController.getEmployeeById);
-employeesRouter.put('/employees/:id', employeeController.updateEmployeeById);
-employeesRouter.delete('/employees/:id', employeeController.deleteEmployeeById);
+employeesRouter.post(
+  '/employees',
+  employeeController.createEmployee.bind(employeeController)
+);
+employeesRouter.get(
+  '/employees',
+  employeeController.getAllEmployees.bind(employeeController)
+);
+employeesRouter.get(
+  '/employees/:id',
+  employeeController.getEmployeeById.bind(employeeController)
+);
+employeesRouter.put(
+  '/employees/:id',
+  employeeController.updateEmployeeById.bind(employeeController)
+);
+employeesRouter.delete(
+  '/employees/:id',
+  employeeController.deleteEmployeeById.bind(employeeController)
+);
 employeesRouter.get(
   '/branches/:id/employees',
-  employeeController.getEmployeesByBranchId
+  employeeController.getEmployeesByBranchId.bind(employeeController)
 );
 
 export { employeesRouter };
