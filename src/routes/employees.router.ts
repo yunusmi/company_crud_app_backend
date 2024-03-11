@@ -1,6 +1,7 @@
 import { Router } from 'express';
 import { EmployeeController } from '../controllers/employees.controller';
 import { EmployeeService } from '../services/employees.service';
+
 const employeeController = new EmployeeController(new EmployeeService());
 
 const employeesRouter = Router();
