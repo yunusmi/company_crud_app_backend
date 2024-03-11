@@ -1,86 +1,108 @@
-import { InventoryService } from '../services/inventory.service.js';
+import { Request, Response, NextFunction } from 'express';
+import { InventoryService } from '../services/inventory.service';
+import {
+  CreateInventoryRequestBody,
+  GetInventoryDataParams,
+  UpdateInventoryDataParams,
+  UpdateInventoryRequestBody,
+  DeleteInventoryParams,
+} from '../utils/interfaces';
 
 export class InventoryController {
-  constructor() {
-    this.inventoryModel = new InventoryModel();
+  private inventoryService: InventoryService;
+
+  constructor(inventoryService: InventoryService) {
+    this.inventoryService = inventoryService;
   }
 
-  createInventoryItem = async (req, res) => {
+  async createInventoryItem(
+    req: Request<{}, {}, CreateInventoryRequestBody>,
+    res: Response,
+    next: NextFunction
+  ): Promise<void> {
     try {
       const { product_id, quantity_in_stock } = req.body;
-      const inventoryId = await this.inventoryModel.createInventoryItem(
+      const inventoryId = await this.inventoryService.createInventoryItem(
         product_id,
         quantity_in_stock
       );
-      res
-        .status(201)
-        .json({ message: 'Запись инвентаря создана', inventoryId });
+      res.status(201).json({
+        message: 'Запись инвентаря создана',
+        inventory_id: inventoryId,
+      });
     } catch (error) {
-      res.status(500).json({ error: 'Внутренняя ошибка сервера' });
       console.log(error);
+      next(error);
     }
-  };
+  }
 
-  getAllInventoryItems = async (req, res) => {
+  async getAllInventoryItems(
+    req: Request,
+    res: Response,
+    next: NextFunction
+  ): Promise<void> {
     try {
-      const inventoryItems = await this.inventoryModel.getAllInventoryItems();
-      res.json(inventoryItems);
+      const inventoryItems = await this.inventoryService.getAllInventoryItems();
+      res.status(200).json(inventoryItems);
     } catch (error) {
-      res.status(500).json({ error: 'Внутренняя ошибка сервера' });
       console.log(error);
+      next(error);
     }
-  };
+  }
 
-  getInventoryItemById = async (req, res) => {
-    const inventoryId = req.params.id;
+  async getInventoryItemById(
+    req: Request<GetInventoryDataParams, {}, {}>,
+    res: Response,
+    next: NextFunction
+  ): Promise<void> {
     try {
-      const inventoryItem = await this.inventoryModel.getInventoryItemById(
+      const inventoryId = req.params.id;
+      const inventoryItem = await this.inventoryService.getInventoryItemById(
         inventoryId
       );
-      if (inventoryItem === null) {
-        res.status(404).json({ error: 'Запись инвентаря не найдена' });
-      } else {
-        res.json(inventoryItem);
-      }
+      res.status(200).json(inventoryItem);
     } catch (error) {
-      res.status(500).json({ error: 'Внутренняя ошибка сервера' });
       console.log(error);
+      next(error);
     }
-  };
+  }
 
-  updateInventoryItemById = async (req, res) => {
-    const inventoryId = req.params.id;
+  async updateInventoryItemById(
+    req: Request<UpdateInventoryDataParams, {}, UpdateInventoryRequestBody>,
+    res: Response,
+    next: NextFunction
+  ): Promise<void> {
     try {
+      const inventoryId = req.params.id;
       const { quantity_in_stock } = req.body;
-      const updatedRows = await this.inventoryModel.updateInventoryItemById(
-        inventoryId,
-        quantity_in_stock
-      );
-      if (updatedRows === 0) {
-        res.status(404).json({ error: 'Запись инвентаря не найдена' });
-      } else {
-        res.json({ message: 'Запись инвентаря обновлена' });
-      }
+      const updateInventory =
+        await this.inventoryService.updateInventoryItemById(
+          inventoryId,
+          quantity_in_stock
+        );
+      res.status(200).json(updateInventory);
     } catch (error) {
-      res.status(500).json({ error: 'Внутренняя ошибка сервера' });
       console.log(error);
+      next(error);
     }
-  };
+  }
 
-  deleteInventoryItemById = async (req, res) => {
-    const inventoryId = req.params.id;
+  async deleteInventoryItemById(
+    req: Request<DeleteInventoryParams, {}, {}>,
+    res: Response,
+    next: NextFunction
+  ): Promise<void> {
     try {
-      const deletedRows = await this.inventoryModel.deleteInventoryItemById(
-        inventoryId
-      );
-      if (deletedRows === 0) {
-        res.status(404).json({ error: 'Запись инвентаря не найдена' });
-      } else {
-        res.json({ message: 'Запись инвентаря удалена' });
-      }
+      const inventoryId = req.params.id;
+      const deleteInventory =
+        await this.inventoryService.deleteInventoryItemById(inventoryId);
+      res.status(200).json({
+        message: 'Запись инвентаря удалена',
+        deleted_data: deleteInventory,
+      });
     } catch (error) {
-      res.status(500).json({ error: 'Внутренняя ошибка сервера' });
       console.log(error);
+      next(error);
     }
-  };
+  }
 }

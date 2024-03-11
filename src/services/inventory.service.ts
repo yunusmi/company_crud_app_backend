@@ -1,82 +1,94 @@
-import { pool } from '../config/database.js';
+import { Op } from 'sequelize';
+import { db } from '../models';
+import { ResponseError } from '../middlewares/errorHandler';
+import {
+  GetInventoriesResponse,
+  UpdateInventoryResponse,
+} from '../utils/interfaces';
 
 export class InventoryService {
-  createInventoryItem = (product_id, quantity_in_stock) => {
-    return new Promise((resolve, reject) => {
-      const query =
-        'INSERT INTO Inventory (product_id, quantity_in_stock) VALUES (?, ?)';
-      const values = [product_id, quantity_in_stock];
-      pool.execute(query, values, (err, result) => {
-        if (err) {
-          console.error('Ошибка при создании записи инвентаря:', err);
-          reject(err);
-        } else {
-          resolve(result.insertId);
-        }
-      });
+  async createInventoryItem(
+    productId: number,
+    quantityInStock: number
+  ): Promise<number> {
+    const { inventory_id: insertId } = await db.inventories.create({
+      product_id: productId,
+      quantity_in_stock: quantityInStock,
     });
-  };
 
-  getAllInventoryItems = () => {
-    return new Promise((resolve, reject) => {
-      const query = 'SELECT * FROM Inventory';
-      pool.execute(query, (err, result) => {
-        if (err) {
-          console.error('Ошибка при выполнении запроса:', err);
-          reject(err);
-        } else {
-          resolve(result);
-        }
-      });
-    });
-  };
+    if (!insertId) {
+      const error: ResponseError = new Error('Ошибка создания инвентаря');
+      error.statusCode = 500;
+      throw error;
+    }
 
-  getInventoryItemById = (inventoryId) => {
-    return new Promise((resolve, reject) => {
-      const query =
-        'SELECT * FROM Inventory WHERE product_id = ? AND quantity_in_stock > 0';
-      pool.execute(query, [inventoryId], (err, result) => {
-        if (err) {
-          console.error('Ошибка при выполнении запроса:', err);
-          reject(err);
-        } else {
-          if (result.length === 0) {
-            resolve(null);
-          } else {
-            resolve(result[0]);
-          }
-        }
-      });
-    });
-  };
+    return insertId;
+  }
 
-  updateInventoryItemById = (inventoryId, newQuantity) => {
-    return new Promise((resolve, reject) => {
-      const query =
-        'UPDATE Inventory SET quantity_in_stock = ? WHERE inventory_id = ?';
-      const values = [newQuantity, inventoryId];
-      pool.execute(query, values, (err, result) => {
-        if (err) {
-          console.error('Ошибка при обновлении записи инвентаря:', err);
-          reject(err);
-        } else {
-          resolve(result.affectedRows);
-        }
-      });
-    });
-  };
+  async getAllInventoryItems(): Promise<GetInventoriesResponse[]> {
+    const inventoryItems = await db.inventories.findAll();
+    if (!inventoryItems) {
+      const error: ResponseError = new Error('Ошибка получения данных');
+      error.statusCode = 500;
+      throw error;
+    }
 
-  deleteInventoryItemById = (inventoryId) => {
-    return new Promise((resolve, reject) => {
-      const query = 'DELETE FROM Inventory WHERE inventory_id = ?';
-      pool.execute(query, [inventoryId], (err, result) => {
-        if (err) {
-          console.error('Ошибка при удалении записи инвентаря:', err);
-          reject(err);
-        } else {
-          resolve(result.affectedRows);
-        }
-      });
+    return inventoryItems;
+  }
+
+  async getInventoryItemById(
+    inventoryId: number
+  ): Promise<GetInventoriesResponse> {
+    const inventoryItem = await db.inventories.findOne({
+      where: {
+        inventory_id: inventoryId,
+        quantity_in_stock: { [Op.gt]: 0 },
+      },
     });
-  };
+
+    if (!inventoryItem) {
+      const error: ResponseError = new Error(
+        `Запись с таким ID ${inventoryId} не найден`
+      );
+      error.statusCode = 404;
+      throw error;
+    }
+
+    return inventoryItem;
+  }
+
+  async updateInventoryItemById(
+    inventoryId: number,
+    quantityInStock: number
+  ): Promise<UpdateInventoryResponse> {
+    const inventoryData = await db.inventories.findOne({
+      where: {
+        inventory_id: inventoryId,
+      },
+    });
+
+    if (!inventoryData) {
+      const error: ResponseError = new Error(
+        `Запись с таким ID ${inventoryId} не найден`
+      );
+      error.statusCode = 404;
+      throw error;
+    }
+
+    return await inventoryData.update({ quantity_in_stock: quantityInStock });
+  }
+
+  async deleteInventoryItemById(inventoryId: number): Promise<void> {
+    const inventory = await db.inventories.findByPk(inventoryId, {});
+
+    if (!inventory) {
+      const error: ResponseError = new Error(
+        `Запись с таким ID ${inventoryId} не найден`
+      );
+      error.statusCode = 404;
+      throw error;
+    }
+
+    return await inventory.destroy();
+  }
 }

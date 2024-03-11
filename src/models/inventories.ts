@@ -1,13 +1,13 @@
 import { DataTypes, Model } from 'sequelize';
 import { sequelize } from '../connector';
 
-class Inventory extends Model {
+class Inventories extends Model {
   public inventory_id!: number;
   public product_id!: number;
   public quantity_in_stock!: number;
 }
 
-Inventory.init(
+Inventories.init(
   {
     inventory_id: {
       type: DataTypes.INTEGER,
@@ -25,11 +25,11 @@ Inventory.init(
   },
   {
     sequelize,
-    modelName: 'inventory',
+    modelName: 'inventories',
     timestamps: false,
     createdAt: false,
     updatedAt: false,
   }
 );
 
-export { Inventory };
+export { Inventories };
