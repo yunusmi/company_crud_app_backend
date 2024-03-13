@@ -28,7 +28,9 @@ export class EmployeeController {
         last_name,
         branch_id
       );
-      res.status(201).json({ message: 'Сотрудник создан', employeeId });
+      res
+        .status(201)
+        .json({ message: 'Сотрудник создан', employee_id: employeeId });
     } catch (error) {
       console.log(error);
       next(error);
@@ -71,9 +73,8 @@ export class EmployeeController {
     res: Response,
     next: NextFunction
   ): Promise<void> {
-    const branchId = req.params.id;
-
     try {
+      const branchId = req.params.id;
       const employeeData = await this.employeeService.getEmployeesByBranchId(
         branchId
       );
@@ -89,9 +90,10 @@ export class EmployeeController {
     res: Response,
     next: NextFunction
   ): Promise<void> {
-    const employeeId = req.params.id;
-    const { first_name, last_name, branch_id } = req.body;
     try {
+      const employeeId = req.params.id;
+      const { first_name, last_name, branch_id } = req.body;
+
       await this.employeeService.updateEmployeeById(
         employeeId,
         first_name,

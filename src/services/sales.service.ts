@@ -1,128 +1,100 @@
-import { pool } from '../config/database.js';
+import { db } from '../models';
+import { ResponseError } from '../middlewares/errorHandler';
+import { GetSalesResponse, UpdateSaleResponse } from '../utils/interfaces';
+import { InventoryService } from '../services/inventory.service';
 
 export class SalesService {
-  createSale = (saleData) => {
-    return new Promise((resolve, reject) => {
-      pool.execute(
-        'INSERT INTO Sales (product_id, employee_id, sale_date, quantity) VALUES (?, ?, ?, ?)',
-        [
-          saleData.product_id,
-          saleData.employee_id,
-          saleData.sale_date,
-          saleData.quantity,
-        ],
-        (err, result) => {
-          if (err) {
-            console.error('Ошибка при создании продажи:', err);
-            reject(err);
-          } else {
-            resolve(result.insertId);
-          }
-        }
-      );
-    });
-  };
+  private inventoryService: InventoryService;
 
-  getAllSales = () => {
-    return new Promise((resolve, reject) => {
-      pool.execute(
-        'SELECT * FROM Sales ORDER BY sale_id DESC',
-        (err, result) => {
-          if (err) {
-            console.error('Ошибка при выполнении запроса:', err);
-            reject(err);
-          } else {
-            resolve(result);
-          }
-        }
-      );
-    });
-  };
+  constructor(inventoryService: InventoryService) {
+    this.inventoryService = inventoryService;
+  }
 
-  getSaleById = (saleId) => {
-    return new Promise((resolve, reject) => {
-      pool.execute(
-        'SELECT * FROM Sales WHERE sale_id = ?',
-        [saleId],
-        (err, result) => {
-          if (err) {
-            console.error('Ошибка при выполнении запроса:', err);
-            reject(err);
-          } else {
-            if (result.length === 0) {
-              resolve(null);
-            } else {
-              resolve(result[0]);
-            }
-          }
-        }
-      );
+  async createSale(
+    productId: number,
+    employeeId: number,
+    saleDate: string,
+    quantity: number
+  ): Promise<number> {
+    const { sale_id: saleId } = await db.sales.create({
+      product_id: productId,
+      employee_id: employeeId,
+      sale_date: saleDate,
+      quantity: quantity,
     });
-  };
 
-  updateSaleById = (saleId, newSaleData) => {
-    return new Promise((resolve, reject) => {
-      pool.execute(
-        'UPDATE Sales SET product_id = ?, employee_id = ?, sale_date = ?, quantity = ? WHERE sale_id = ?',
-        [
-          newSaleData.product_id,
-          newSaleData.employee_id,
-          newSaleData.sale_date,
-          newSaleData.quantity,
-          saleId,
-        ],
-        async (err, result) => {
-          if (err) {
-            console.error('Ошибка при обновлении продажи:', err);
-            reject(err);
-          } else {
-            try {
-              await this.updateInventory(
-                newSaleData.product_id,
-                -newSaleData.quantity
-              );
-              resolve(result.affectedRows);
-            } catch (error) {
-              console.error('Ошибка при обновлении инвентаря:', error);
-              reject(error);
-            }
-          }
-        }
-      );
-    });
-  };
+    if (!saleId) {
+      const error: ResponseError = new Error('Ошибка создания записи продаж');
+      error.statusCode = 500;
+      throw error;
+    }
 
-  updateInventory = (product_id, quantity) => {
-    return new Promise((resolve, reject) => {
-      pool.execute(
-        'UPDATE Inventory SET quantity_in_stock = quantity_in_stock + ? WHERE product_id = ?',
-        [quantity, product_id],
-        (err, result) => {
-          if (err) {
-            console.error('Ошибка при обновлении инвентаря:', err);
-            reject(err);
-          } else {
-            resolve(result.affectedRows);
-          }
-        }
-      );
-    });
-  };
+    // Уменьшает кол-во остатка на складе после продажи товара
+    await this.inventoryService.decreaseQtyAfterSale(productId, 0, quantity);
 
-  deleteSaleById = (saleId) => {
-    return new Promise((resolve, reject) => {
-      pool.execute(
-        'DELETE FROM Sales WHERE sale_id = ?',
-        [saleId],
-        (err, result) => {
-          if (err) {
-            console.error('Ошибка при удалении продажи:', err);
-            reject(err);
-          } else {
-            resolve(result.affectedRows);
-          }
-        }
-      );
+    return saleId;
+  }
+
+  async getAllSales(): Promise<GetSalesResponse[]> {
+    const sales = await db.sales.findAll();
+    if (!sales) {
+      const error: ResponseError = new Error('Ошибка получения записей продаж');
+      error.statusCode = 500;
+      throw error;
+    }
+
+    return sales;
+  }
+
+  async getSaleById(saleId: number): Promise<GetSalesResponse> {
+    const sale = await db.sales.findByPk(saleId, {});
+    if (!sale) {
+      const error: ResponseError = new Error('Ошибка получения записей продаж');
+      error.statusCode = 500;
+      throw error;
+    }
+
+    return sale;
+  }
+
+  async updateSaleById(
+    saleId: number,
+    productId: number,
+    employeeId: number,
+    saleDate: string,
+    quantity: number
+  ): Promise<UpdateSaleResponse> {
+    const sale = await db.sales.findByPk(saleId, {});
+    if (!sale) {
+      const error: ResponseError = new Error('Ошибка обновления записи продаж');
+      error.statusCode = 500;
+      throw error;
+    }
+
+    const excistingSaledProductQty = sale.dataValues.quantity;
+
+    await this.inventoryService.decreaseQtyAfterSale(
+      productId,
+      excistingSaledProductQty,
+      quantity
+    );
+
+    return await sale.update({
+      product_id: productId,
+      employee_id: employeeId,
+      sale_date: saleDate,
+      quantity: quantity,
     });
-  };
+  }
+
+  async deleteSaleById(saleId: number): Promise<void> {
+    const sale = await db.sales.findByPk(saleId, {});
+    if (!sale) {
+      const error: ResponseError = new Error('Ошибка удаления записи продаж');
+      error.statusCode = 500;
+      throw error;
+    }
+
+    return await sale.destroy();
+  }
 }

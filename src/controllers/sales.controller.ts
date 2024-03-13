@@ -1,75 +1,107 @@
-import { SalesService } from '../services/sales.service.js';
+import { Request, Response, NextFunction } from 'express';
+import { SalesService } from '../services/sales.service';
+import {
+  CreateSaleRequestBody,
+  GetSalesParams,
+  UpdateSaleRequestBody,
+  UpdateSaleParams,
+  DeleteSaleParams,
+} from '../utils/interfaces';
 
 export class SalesController {
-  constructor() {
-    this.salesModel = new SalesModel();
+  private salesService: SalesService;
+
+  constructor(salesService: SalesService) {
+    this.salesService = salesService;
   }
 
-  createSale = async (req, res) => {
+  async createSale(
+    req: Request<{}, {}, CreateSaleRequestBody>,
+    res: Response,
+    next: NextFunction
+  ): Promise<void> {
     try {
-      const saleId = await this.salesModel.createSale(req.body);
-      res.status(201).json({ message: 'Продажа создана', saleId });
-    } catch (error) {
-      res.status(500).json({ error: 'Внутренняя ошибка сервера' });
-      console.log(error);
-    }
-  };
-
-  getAllSales = async (req, res) => {
-    try {
-      const sales = await this.salesModel.getAllSales();
-      res.json(sales);
-    } catch (error) {
-      res.status(500).json({ error: 'Внутренняя ошибка сервера' });
-      console.log(error);
-    }
-  };
-
-  getSaleById = async (req, res) => {
-    const saleId = req.params.id;
-    try {
-      const sale = await this.salesModel.getSaleById(saleId);
-      if (sale === null) {
-        res.status(404).json({ error: 'Продажа не найдена' });
-      } else {
-        res.json(sale);
-      }
-    } catch (error) {
-      res.status(500).json({ error: 'Внутренняя ошибка сервера' });
-      console.log(error);
-    }
-  };
-
-  updateSaleById = async (req, res) => {
-    const saleId = req.params.id;
-    try {
-      const updatedRows = await this.salesModel.updateSaleById(
-        saleId,
-        req.body
+      const { product_id, employee_id, sale_date, quantity } = req.body;
+      const saleId = await this.salesService.createSale(
+        product_id,
+        employee_id,
+        sale_date,
+        quantity
       );
-      if (updatedRows === 0) {
-        res.status(404).json({ error: 'Продажа не найдена' });
-      } else {
-        res.json({ message: 'Продажа обновлена' });
-      }
+      res.status(201).json({ message: 'Продажа создана', sale_id: saleId });
     } catch (error) {
-      res.status(500).json({ error: 'Внутренняя ошибка сервера' });
       console.log(error);
+      next(error);
     }
-  };
+  }
 
-  deleteSaleById = async (req, res) => {
-    const saleId = req.params.id;
+  async getAllSales(
+    req: Request,
+    res: Response,
+    next: NextFunction
+  ): Promise<void> {
     try {
-      const deletedRows = await this.salesModel.deleteSaleById(saleId);
-      if (deletedRows === 0) {
-        res.status(404).json({ error: 'Продажа не найдена' });
-      } else {
-        res.json({ message: 'Продажа удалена' });
-      }
+      const sales = await this.salesService.getAllSales();
+      res.status(200).json(sales);
     } catch (error) {
-      res.status(500).json({ error: 'Внутренняя ошибка сервера' });
       console.log(error);
+      next(error);
     }
-  };
+  }
+
+  async getSaleById(
+    req: Request<GetSalesParams, {}, {}>,
+    res: Response,
+    next: NextFunction
+  ): Promise<void> {
+    try {
+      const saleId = req.params.id;
+      const sale = await this.salesService.getSaleById(saleId);
+      res.status(200).json(sale);
+    } catch (error) {
+      console.log(error);
+      next(error);
+    }
+  }
+
+  async updateSaleById(
+    req: Request<UpdateSaleParams, {}, UpdateSaleRequestBody>,
+    res: Response,
+    next: NextFunction
+  ): Promise<void> {
+    try {
+      const saleId = req.params.id;
+      const { product_id, employee_id, sale_date, quantity } = req.body;
+      const updatedRows = await this.salesService.updateSaleById(
+        saleId,
+        product_id,
+        employee_id,
+        sale_date,
+        quantity
+      );
+      res
+        .status(200)
+        .json({ message: 'Продажа обновлена', updated_rows: updatedRows });
+    } catch (error) {
+      console.log(error);
+      next(error);
+    }
+  }
+
+  async deleteSaleById(
+    req: Request<DeleteSaleParams, {}, {}>,
+    res: Response,
+    next: NextFunction
+  ): Promise<void> {
+    try {
+      const saleId = req.params.id;
+      const deletedRows = await this.salesService.deleteSaleById(saleId);
+      res
+        .status(200)
+        .json({ message: 'Продажа удалена', deleted_rows: deletedRows });
+    } catch (error) {
+      console.log(error);
+      next(error);
+    }
+  }
 }

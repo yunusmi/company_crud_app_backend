@@ -79,7 +79,7 @@ export class EmployeeService {
     firstName: string,
     lastName: string,
     branchId: number
-  ): Promise<void> {
+  ): Promise<GetEmployeesResponse> {
     const employee = await db.employees.findByPk(employeeId, {});
 
     if (!employee) {
@@ -90,19 +90,11 @@ export class EmployeeService {
       throw error;
     }
 
-    const updateEmployee = employee.update(employeeId, {
+    return await employee.update({
       first_name: firstName,
       last_name: lastName,
       branch_id: branchId,
     });
-
-    if (!updateEmployee) {
-      const error: ResponseError = new Error(`Ошибка обновления сотрудника`);
-      error.statusCode = 500;
-      throw error;
-    }
-
-    return;
   }
 
   async deleteEmployeeById(employeeId: number): Promise<void> {
@@ -116,17 +108,6 @@ export class EmployeeService {
       throw error;
     }
 
-    const deleteEmployee = await db.employees.destroy({
-      where: {
-        employee_id: employeeId,
-      },
-    });
-
-    if (deleteEmployee !== 1) {
-      const err: ResponseError = new Error('Ошибка удаления сотрудника');
-      err.statusCode = 500;
-      throw err;
-    }
-    return;
+    return await employee.destroy();
   }
 }

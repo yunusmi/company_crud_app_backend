@@ -1,86 +1,122 @@
-import { ProductService } from '../services/products.service.js';
+import { Request, Response, NextFunction } from 'express';
+import { ProductService } from '../services/products.service';
+import {
+  CreateProductRequestBody,
+  GetProductsParams,
+  UpdateProductParams,
+  UpdateProductRequestBody,
+  DeleteProductParams,
+} from '../utils/interfaces';
 
 export class ProductController {
-  constructor() {
-    this.productModel = new ProductModel();
+  private productService: ProductService;
+
+  constructor(productService: ProductService) {
+    this.productService = productService;
   }
 
-  createProduct = async (req, res) => {
+  async createProduct(
+    req: Request<{}, {}, CreateProductRequestBody>,
+    res: Response,
+    next: NextFunction
+  ): Promise<void> {
     try {
-      const productId = await this.productModel.createProduct(req.body);
-      res.status(201).json({ message: 'Товар создан', productId });
-    } catch (error) {
-      res.status(500).json({ error: 'Внутренняя ошибка сервера' });
-      console.log(error);
-    }
-  };
-
-  getAllProducts = async (req, res) => {
-    try {
-      const products = await this.productModel.getAllProducts();
-      res.json(products);
-    } catch (error) {
-      res.status(500).json({ error: 'Внутренняя ошибка сервера' });
-      console.log(error);
-    }
-  };
-
-  getProductById = async (req, res) => {
-    const productId = req.params.id;
-    try {
-      const product = await this.productModel.getProductById(productId);
-      if (product === null) {
-        res.status(404).json({ error: 'Товар не найден' });
-      } else {
-        res.json(product);
-      }
-    } catch (error) {
-      res.status(500).json({ error: 'Внутренняя ошибка сервера' });
-      console.log(error);
-    }
-  };
-
-  getProductsByBranchId = async (req, res) => {
-    const branchId = req.params.id;
-    try {
-      const products = await this.productModel.getProductsByBranchId(branchId);
-      res.json(products);
-    } catch (error) {
-      res.status(500).json({ error: 'Внутренняя ошибка сервера' });
-      console.error(error);
-    }
-  };
-
-  updateProductById = async (req, res) => {
-    const productId = req.params.id;
-    try {
-      const updatedRows = await this.productModel.updateProductById(
-        productId,
-        req.body
+      const defaultProductQuantity = 100;
+      const { product_name, price, branch_id } = req.body;
+      const productId = await this.productService.createProduct(
+        defaultProductQuantity,
+        product_name,
+        price,
+        branch_id
       );
-      if (updatedRows === 0) {
-        res.status(404).json({ error: 'Товар не найден' });
-      } else {
-        res.json({ message: 'Товар обновлен' });
-      }
+      res.status(201).json({ message: 'Товар создан', product_id: productId });
     } catch (error) {
-      res.status(500).json({ error: 'Внутренняя ошибка сервера' });
       console.log(error);
+      next(error);
     }
-  };
+  }
 
-  deleteProductById = async (req, res) => {
-    const productId = req.params.id;
+  async getAllProducts(
+    req: Request,
+    res: Response,
+    next: NextFunction
+  ): Promise<void> {
     try {
-      const deletedRows = await this.productModel.deleteProductById(productId);
-      if (deletedRows === 0) {
-        res.status(404).json({ error: 'Товар не найден' });
-      } else {
-        res.json({ message: 'Товар удален' });
-      }
+      const products = await this.productService.getAllProducts();
+      res.status(200).json(products);
     } catch (error) {
-      res.status(500).json({ error: 'Внутренняя ошибка сервера' });
       console.log(error);
+      next(error);
     }
-  };
+  }
+
+  async getProductById(
+    req: Request<GetProductsParams, {}, {}>,
+    res: Response,
+    next: NextFunction
+  ): Promise<void> {
+    try {
+      const productId = req.params.id;
+      const product = await this.productService.getProductById(productId);
+      res.status(200).json(product);
+    } catch (error) {
+      console.log(error);
+      next(error);
+    }
+  }
+
+  async getProductsByBranchId(
+    req: Request<GetProductsParams, {}, {}>,
+    res: Response,
+    next: NextFunction
+  ): Promise<void> {
+    try {
+      const branchId = req.params.id;
+      const products = await this.productService.getProductsByBranchId(
+        branchId
+      );
+      res.status(200).json(products);
+    } catch (error) {
+      console.log(error);
+      next(error);
+    }
+  }
+
+  async updateProductById(
+    req: Request<UpdateProductParams, {}, UpdateProductRequestBody>,
+    res: Response,
+    next: NextFunction
+  ): Promise<void> {
+    try {
+      const productId = req.params.id;
+      const { product_name, price, branch_id } = req.body;
+      const updatedRows = await this.productService.updateProductById(
+        productId,
+        product_name,
+        price,
+        branch_id
+      );
+      res.status(200).json(updatedRows);
+    } catch (error) {
+      console.log(error);
+      next(error);
+    }
+  }
+
+  async deleteProductById(
+    req: Request<DeleteProductParams, {}, {}>,
+    res: Response,
+    next: NextFunction
+  ): Promise<void> {
+    try {
+      const productId = req.params.id;
+      const deletedRows = await this.productService.deleteProductById(
+        productId
+      );
+      res.status(200).json(deletedRows);
+    } catch (error) {
+      console.log(error);
+      next(error);
+    }
+  }
 }

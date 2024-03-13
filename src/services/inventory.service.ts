@@ -1,9 +1,10 @@
-import { Op } from 'sequelize';
+import { Op, where } from 'sequelize';
 import { db } from '../models';
 import { ResponseError } from '../middlewares/errorHandler';
 import {
   GetInventoriesResponse,
   UpdateInventoryResponse,
+  IncreaseProductInventoryResponse,
 } from '../utils/interfaces';
 
 export class InventoryService {
@@ -90,5 +91,43 @@ export class InventoryService {
     }
 
     return await inventory.destroy();
+  }
+
+  // Уменьшает кол-во остатка на складе после продажи товара
+  async decreaseQtyAfterSale(
+    productId: number,
+    excistingSaledProductQty: number,
+    updatedSaledProductQty: number
+  ): Promise<[IncreaseProductInventoryResponse | number]> {
+    const productSales = await db.inventories.findOne({
+      where: {
+        product_id: productId,
+      },
+    });
+
+    if (!productSales) {
+      const error: ResponseError = new Error(
+        `Товар с таким ID ${productId} не найден`
+      );
+      error.statusCode = 404;
+      throw error;
+    }
+
+    const preTotalSaledQty =
+      productSales.dataValues.quantity_in_stock + excistingSaledProductQty;
+
+    const totalSaledQty = preTotalSaledQty - updatedSaledProductQty;
+
+    return await db.inventories.update(
+      {
+        quantity_in_stock: totalSaledQty,
+      },
+      {
+        where: {
+          product_id: productId,
+          inventory_id: productSales.dataValues.inventory_id,
+        },
+      }
+    );
   }
 }
