@@ -1,122 +1,127 @@
-import { pool } from '../config/database.js';
+import { db } from '../models';
+import { ResponseError } from '../middlewares/errorHandler';
+import {
+  GetProductsResponse,
+  DeleteProductsResponse,
+  UpdateProductResponse,
+} from '../utils/interfaces';
 
 export class ProductService {
-  createProduct = (productData, quantityInStock) => {
-    return new Promise((resolve, reject) => {
-      pool.execute(
-        'INSERT INTO Products (product_name, price, branch_id) VALUES (?, ?, ?)',
-        [productData.product_name, productData.price, productData.branch_id],
-        (err, result) => {
-          if (err) {
-            console.error('Ошибка при создании товара:', err);
-            reject(err);
-          } else {
-            const productId = result.insertId;
-            pool.execute(
-              'INSERT INTO Inventory (product_id, quantity_in_stock) VALUES (?, ?)',
-              [productId, productData.quantity_in_stock],
-              (err, result) => {
-                if (err) {
-                  console.error('Ошибка при создании записи в инвентаре:', err);
-                  reject(err);
-                } else {
-                  resolve(productId);
-                }
-              }
-            );
-          }
-        }
-      );
+  async createProduct(
+    defaultProductQuantity: number,
+    productName: string,
+    price: number,
+    branchId: number
+  ): Promise<number> {
+    const { product_id: productId } = await db.products.create({
+      product_name: productName,
+      price: price,
+      branch_id: branchId,
     });
-  };
 
-  getAllProducts = () => {
-    return new Promise((resolve, reject) => {
-      pool.execute('SELECT * FROM Products', (err, result) => {
-        if (err) {
-          console.error('Ошибка при выполнении запроса:', err);
-          reject(err);
-        } else {
-          resolve(result);
-        }
-      });
-    });
-  };
+    if (!productId) {
+      const error: ResponseError = new Error('Ошибка при создании товара');
+      error.statusCode = 500;
+      throw error;
+    }
 
-  getProductById = (productId) => {
-    return new Promise((resolve, reject) => {
-      pool.execute(
-        'SELECT * FROM Products WHERE product_id = ?',
-        [productId],
-        (err, result) => {
-          if (err) {
-            console.error('Ошибка при выполнении запроса:', err);
-            reject(err);
-          } else {
-            if (result.length === 0) {
-              resolve(null);
-            } else {
-              resolve(result[0]);
-            }
-          }
-        }
-      );
+    const { inventory_id: inventoryId } = await db.inventories.create({
+      product_id: productId,
+      quantity_in_stock: defaultProductQuantity,
     });
-  };
 
-  getProductsByBranchId = (branchId) => {
-    return new Promise((resolve, reject) => {
-      pool.execute(
-        'SELECT * FROM Products WHERE branch_id = ?',
-        [branchId],
-        (err, result) => {
-          if (err) {
-            console.error('Ошибка при выполнении запроса:', err);
-            reject(err);
-          } else {
-            resolve(result);
-          }
-        }
+    if (!inventoryId) {
+      const error: ResponseError = new Error(
+        'Ошибка при создании записи в инвентаре'
       );
-    });
-  };
+      error.statusCode = 500;
+      throw error;
+    }
 
-  updateProductById = (productId, newProductData) => {
-    return new Promise((resolve, reject) => {
-      pool.execute(
-        'UPDATE Products SET product_name = ?, price = ?, branch_id = ? WHERE product_id = ?',
-        [
-          newProductData.product_name,
-          newProductData.price,
-          newProductData.branch_id,
-          productId,
-        ],
-        (err, result) => {
-          if (err) {
-            console.error('Ошибка при обновлении товара:', err);
-            reject(err);
-          } else {
-            resolve(result.affectedRows);
-          }
-        }
-      );
-    });
-  };
+    return productId;
+  }
 
-  deleteProductById = (productId) => {
-    return new Promise((resolve, reject) => {
-      pool.execute(
-        'DELETE FROM Products WHERE product_id = ?',
-        [productId],
-        (err, result) => {
-          if (err) {
-            console.error('Ошибка при удалении товара:', err);
-            reject(err);
-          } else {
-            resolve(result.affectedRows);
-          }
-        }
-      );
+  async getAllProducts(): Promise<GetProductsResponse[]> {
+    const products = await db.products.findAll();
+
+    if (!products) {
+      const error: ResponseError = new Error('Ошибка получения товаров');
+      error.statusCode = 500;
+      throw error;
+    }
+
+    return products;
+  }
+
+  async getProductById(productId: number): Promise<GetProductsResponse> {
+    const product = await db.products.findByPk(productId, {});
+    if (!product) {
+      const error: ResponseError = new Error('Ошибка получения товара');
+      error.statusCode = 500;
+      throw error;
+    }
+
+    return product;
+  }
+
+  async getProductsByBranchId(
+    branchId: number
+  ): Promise<GetProductsResponse[]> {
+    const products = await db.products.findAll({
+      where: {
+        branch_id: branchId,
+      },
     });
-  };
+
+    if (!products) {
+      const error: ResponseError = new Error('Ошибка получения товаров');
+      error.statusCode = 500;
+      throw error;
+    }
+
+    return products;
+  }
+
+  async updateProductById(
+    productId: number,
+    productName: string,
+    price: number,
+    branchId: number
+  ): Promise<UpdateProductResponse> {
+    const product = await db.products.findByPk(productId, {});
+    if (!product) {
+      const error: ResponseError = new Error('Ошибка получения товаров');
+      error.statusCode = 500;
+      throw error;
+    }
+
+    return await product.update({
+      product_name: productName,
+      price: price,
+      branc_id: branchId,
+    });
+  }
+
+  async deleteProductById(productId: number): Promise<DeleteProductsResponse> {
+    const product = await db.products.findByPk(productId, {});
+    if (!product) {
+      const error: ResponseError = new Error('Ошибка получения товаров');
+      error.statusCode = 500;
+      throw error;
+    }
+
+    const [deleted_product_rows, deleted_inventory_rows] = await Promise.all([
+      product.destroy(),
+      db.inventories.destroy({
+        where: {
+          product_id: productId,
+        },
+      }),
+    ]);
+
+    return {
+      deleted_product_rows,
+      deleted_inventory_rows,
+    };
+  }
 }

@@ -25,6 +25,10 @@ export interface GetInventoryDataParams extends RequestParams {}
 export interface UpdateInventoryDataParams extends RequestParams {}
 export interface UpdateInventoryResponse extends GetInventoriesResponse {}
 export interface DeleteInventoryParams extends RequestParams {}
+export interface GetProductsParams extends RequestParams {}
+export interface UpdateProductParams extends RequestParams {}
+export interface DeleteProductParams extends RequestParams {}
+export interface GetSalesParams extends RequestParams {}
 
 export interface CreateBranchRequestBody {
   branch_name: string;
@@ -64,3 +68,45 @@ export interface GetInventoriesResponse {
 export interface UpdateInventoryRequestBody {
   quantity_in_stock: number;
 }
+
+export interface CreateProductRequestBody {
+  quantity_in_stock?: number;
+  product_name: string;
+  price: number;
+  branch_id: number;
+}
+
+export interface UpdateProductRequestBody extends CreateProductRequestBody {}
+export interface UpdateProductResponse extends GetProductsResponse {}
+export interface IncreaseProductInventoryResponse extends GetProductsResponse {
+  sale_id: number;
+}
+
+export interface GetProductsResponse {
+  product_id: number;
+  product_name: string;
+  price: number;
+  branch_id: number;
+}
+
+export interface DeleteProductsResponse {
+  deleted_product_rows: void;
+  deleted_inventory_rows: number;
+}
+
+export interface CreateSaleRequestBody {
+  product_id: number;
+  employee_id: number;
+  sale_date: string;
+  quantity: number;
+}
+
+export interface UpdateSaleRequestBody extends CreateSaleRequestBody {}
+export interface UpdateSaleParams extends RequestParams {}
+export interface DeleteSaleParams extends RequestParams {}
+
+export interface GetSalesResponse extends CreateSaleRequestBody {
+  sale_id: number;
+}
+
+export interface UpdateSaleResponse extends GetSalesResponse {}
