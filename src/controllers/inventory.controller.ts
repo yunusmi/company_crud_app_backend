@@ -27,7 +27,7 @@ export class InventoryController {
         quantity_in_stock
       );
       res.status(201).json({
-        message: 'Запись инвентаря создана',
+        message: 'Запись инвентаря успешно создана',
         inventory_id: inventoryId,
       });
     } catch (error) {
@@ -80,7 +80,10 @@ export class InventoryController {
           inventoryId,
           quantity_in_stock
         );
-      res.status(200).json(updateInventory);
+      res.status(200).json({
+        message: 'Запись инвентаря успешно обновлена',
+        updated_rows: updateInventory,
+      });
     } catch (error) {
       console.log(error);
       next(error);
@@ -97,7 +100,7 @@ export class InventoryController {
       const deleteInventory =
         await this.inventoryService.deleteInventoryItemById(inventoryId);
       res.status(200).json({
-        message: 'Запись инвентаря удалена',
+        message: 'Запись инвентаря успешно удалена',
         deleted_data: deleteInventory,
       });
     } catch (error) {

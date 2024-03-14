@@ -6,7 +6,7 @@ import { inventoryRouter } from './inventory.router';
 import { salesRouter } from './sales.router';
 
 import swaggerUi from 'swagger-ui-express';
-import swaggerDocument from '../utils/swagger-output.json';
+import swaggerDocument from '../utils/swagger/swagger-api.json';
 
 const router = Router();
 

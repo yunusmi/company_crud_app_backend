@@ -29,7 +29,9 @@ export class ProductController {
         price,
         branch_id
       );
-      res.status(201).json({ message: 'Товар создан', product_id: productId });
+      res
+        .status(201)
+        .json({ message: 'Товар успешно создан', product_id: productId });
     } catch (error) {
       console.log(error);
       next(error);
@@ -96,7 +98,9 @@ export class ProductController {
         price,
         branch_id
       );
-      res.status(200).json(updatedRows);
+      res
+        .status(200)
+        .json({ message: 'Товар успешно обновлен', updated_rows: updatedRows });
     } catch (error) {
       console.log(error);
       next(error);
@@ -113,7 +117,9 @@ export class ProductController {
       const deletedRows = await this.productService.deleteProductById(
         productId
       );
-      res.status(200).json(deletedRows);
+      res
+        .status(200)
+        .json({ message: 'Товар успешно удален', deleted_rows: deletedRows });
     } catch (error) {
       console.log(error);
       next(error);

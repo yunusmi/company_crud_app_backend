@@ -2,7 +2,7 @@
   "name": "company_crud_app_backend",
   "version": "2.0.0",
   "description": "Company CRUD application backend",
-  "main": "app.js",
+  "main": "./src/app.ts",
   "scripts": {
     "dev": "cross-env NODE_ENV=development nodemon --esm --files ./src/app.ts",
     "prod": "cross-env NODE_ENV=production node ./dist/app.js",
@@ -14,7 +14,7 @@
     "db:seed:undo:production": "cross-env NODE_ENV=production ts-node ./node_modules/sequelize-cli/lib/sequelize db:seed:undo:all",
     "db:migrate:up:production": "cross-env NODE_ENV=production ts-node ./node_modules/sequelize-cli/lib/sequelize db:migrate",
     "db:migrate:undo:production": "cross-env NODE_ENV=production ts-node ./node_modules/sequelize-cli/lib/sequelize db:migrate:undo:all",
-    "generate-swagger-document": "ts-node ./src/utils/swagger"
+    "generate-swagger-document": "ts-node ./src/utils/swagger/generate-doc"
   },
   "dependencies": {
     "body-parser": "^1.20.2",

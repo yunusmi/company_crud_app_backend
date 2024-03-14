@@ -30,7 +30,7 @@ export class EmployeeController {
       );
       res
         .status(201)
-        .json({ message: 'Сотрудник создан', employee_id: employeeId });
+        .json({ message: 'Сотрудник успешно создан', employee_id: employeeId });
     } catch (error) {
       console.log(error);
       next(error);
@@ -94,13 +94,16 @@ export class EmployeeController {
       const employeeId = req.params.id;
       const { first_name, last_name, branch_id } = req.body;
 
-      await this.employeeService.updateEmployeeById(
+      const updatedRows = await this.employeeService.updateEmployeeById(
         employeeId,
         first_name,
         last_name,
         branch_id
       );
-      res.status(200).json({ message: 'Сотрудник обновлен' });
+      res.status(200).json({
+        message: 'Сотрудник успешно обновлен',
+        updated_rows: updatedRows,
+      });
     } catch (error) {
       console.log(error);
       next(error);
@@ -115,7 +118,7 @@ export class EmployeeController {
     const employeeId = req.params.id;
     try {
       await this.employeeService.deleteEmployeeById(employeeId);
-      res.status(200).json({ message: 'Сотрудник удален' });
+      res.status(200).json({ message: 'Сотрудник успешно удален' });
     } catch (error) {
       console.log(error);
       next(error);

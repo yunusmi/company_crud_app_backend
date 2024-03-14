@@ -49,7 +49,7 @@ export class InventoryService {
 
     if (!inventoryItem) {
       const error: ResponseError = new Error(
-        `Запись с таким ID ${inventoryId} не найден`
+        `Запись с таким ID ${inventoryId} не найдена`
       );
       error.statusCode = 404;
       throw error;
@@ -70,7 +70,7 @@ export class InventoryService {
 
     if (!inventoryData) {
       const error: ResponseError = new Error(
-        `Запись с таким ID ${inventoryId} не найден`
+        `Запись с таким ID ${inventoryId} не найдена`
       );
       error.statusCode = 404;
       throw error;
@@ -84,7 +84,7 @@ export class InventoryService {
 
     if (!inventory) {
       const error: ResponseError = new Error(
-        `Запись с таким ID ${inventoryId} не найден`
+        `Запись с таким ID ${inventoryId} не найдена`
       );
       error.statusCode = 404;
       throw error;

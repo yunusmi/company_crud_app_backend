@@ -56,8 +56,10 @@ export class ProductService {
   async getProductById(productId: number): Promise<GetProductsResponse> {
     const product = await db.products.findByPk(productId, {});
     if (!product) {
-      const error: ResponseError = new Error('Ошибка получения товара');
-      error.statusCode = 500;
+      const error: ResponseError = new Error(
+        `Товар с таким ID ${productId} не найден`
+      );
+      error.statusCode = 404;
       throw error;
     }
 
@@ -74,8 +76,10 @@ export class ProductService {
     });
 
     if (!products) {
-      const error: ResponseError = new Error('Ошибка получения товаров');
-      error.statusCode = 500;
+      const error: ResponseError = new Error(
+        `Товары с таким branch_id ${branchId} не найден`
+      );
+      error.statusCode = 404;
       throw error;
     }
 
@@ -90,8 +94,10 @@ export class ProductService {
   ): Promise<UpdateProductResponse> {
     const product = await db.products.findByPk(productId, {});
     if (!product) {
-      const error: ResponseError = new Error('Ошибка получения товаров');
-      error.statusCode = 500;
+      const error: ResponseError = new Error(
+        `Товар с таким ID ${productId} не найден`
+      );
+      error.statusCode = 404;
       throw error;
     }
 
@@ -105,8 +111,10 @@ export class ProductService {
   async deleteProductById(productId: number): Promise<DeleteProductsResponse> {
     const product = await db.products.findByPk(productId, {});
     if (!product) {
-      const error: ResponseError = new Error('Ошибка получения товаров');
-      error.statusCode = 500;
+      const error: ResponseError = new Error(
+        `Товар с таким ID ${productId} не найден`
+      );
+      error.statusCode = 404;
       throw error;
     }
 
