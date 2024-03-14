@@ -1,82 +1,196 @@
 {
   "swagger": "2.0",
   "info": {
-    "title": "Documentation for Company REST API interface",
-    "version": "2.0.0",
+    "title": "Документация API интерфейсов приложения",
+    "version": "1.0.0",
     "description": ""
   },
   "host": "localhost:3001",
   "basePath": "/",
-  "schemes": [
-    "http"
-  ],
-  "consumes": [
-    "application/json"
-  ],
-  "produces": [
-    "application/json"
-  ],
+  "schemes": ["http"],
+  "consumes": ["application/json"],
+  "produces": ["application/json"],
   "paths": {
     "/api-docs": {
       "get": {
-        "description": "",
+        "description": "Swagger документация API интерфейсов приложения",
         "responses": {
-          "default": {
-            "description": ""
+          "200": {
+            "description": "Возвращает список роутов с параметрами всех операций CRUD для каждого сервиса"
           }
         }
       }
     },
     "/api/employees": {
       "post": {
-        "description": "",
+        "description": "Создание нового сотрудника",
+        "parameters": [
+          {
+            "name": "first_name",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "last_name",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "branch_id",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "type": "integer"
+            }
+          }
+        ],
         "responses": {
-          "default": {
-            "description": ""
+          "201": {
+            "description": "Сотрудник успешно создан"
+          },
+          "500": {
+            "description": "Ошибка сервера"
           }
         }
       },
       "get": {
-        "description": "",
+        "description": "Вывод всех сотрудников из базы данных",
         "responses": {
-          "default": {
-            "description": ""
+          "200": {
+            "description": "Успешный вывод массива данных"
+          },
+          "500": {
+            "description": "Ошибка сервера"
           }
         }
       }
     },
-    "/api/employees/{id}": {
+    "/api/employees/{employee_id}": {
       "get": {
-        "description": "",
+        "description": "Поиск сотрудника по его ID",
+        "parameters": [
+          {
+            "name": "employee_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer"
+            }
+          }
+        ],
         "responses": {
-          "default": {
-            "description": ""
+          "200": {
+            "description": "Успешный вывод"
+          },
+          "404": {
+            "description": "Сотрудник не найден"
+          },
+          "500": {
+            "description": "Ошибка сервера"
           }
         }
       },
       "put": {
-        "description": "",
+        "description": "Обновление учетных данных пользователя",
+        "parameters": [
+          {
+            "name": "employee_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer"
+            }
+          },
+          {
+            "name": "first_name",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "last_name",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "branch_id",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "type": "integer"
+            }
+          }
+        ],
         "responses": {
-          "default": {
-            "description": ""
+          "200": {
+            "description": "Сотрудник обновлен"
+          },
+          "404": {
+            "description": "Сотрудник с таким ID не найден"
+          },
+          "500": {
+            "description": "Ошибка сервера"
           }
         }
       },
       "delete": {
-        "description": "",
+        "description": "Удаление сотрудника",
+        "parameters": [
+          {
+            "name": "employee_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer"
+            }
+          }
+        ],
         "responses": {
-          "default": {
-            "description": ""
+          "200": {
+            "description": "Сотрудник удален"
+          },
+          "404": {
+            "description": "Сотрудник с таким ID не найден"
+          },
+          "500": {
+            "description": "Ошибка сервера"
           }
         }
       }
     },
-    "/api/branches/{id}/employees": {
+    "/api/branches/{branch_id}/employees": {
       "get": {
-        "description": "",
+        "description": "Вывод всех сотрудников указанного филиала (передается нужного ID филиала)",
+        "parameters": [
+          {
+            "name": "branch_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer"
+            }
+          }
+        ],
         "responses": {
-          "default": {
-            "description": ""
+          "200": {
+            "description": "Успешный вывод"
+          },
+          "404": {
+            "description": "Сотрудник не найден"
+          },
+          "500": {
+            "description": "Ошибка сервера"
           }
         }
       }

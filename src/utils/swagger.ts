@@ -8,7 +8,7 @@ dotenv.config();
 const doc = {
   info: {
     title: 'Documentation for Company REST API interface',
-    version: '2.0.0',
+    version: '1.0.0',
     description: '',
   },
 

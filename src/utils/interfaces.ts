@@ -115,7 +115,7 @@ export interface SwaggerDefinition {
   parameters: any;
   in: string;
   name: string;
-  type: string;
+  type: string | number;
   required: boolean;
   description: string;
 }

@@ -48,7 +48,7 @@ export class EmployeeService {
     const employeesData = await db.employees.findByPk(employeeId, {});
 
     if (!employeesData) {
-      const error: ResponseError = new Error('Пользователь не найден');
+      const error: ResponseError = new Error('Сотрудник не найден');
       error.statusCode = 404;
       throw error;
     }
@@ -66,7 +66,7 @@ export class EmployeeService {
     });
 
     if (!employeesData) {
-      const error: ResponseError = new Error('Пользователь не найден');
+      const error: ResponseError = new Error('Сотрудник не найден');
       error.statusCode = 404;
       throw error;
     }
