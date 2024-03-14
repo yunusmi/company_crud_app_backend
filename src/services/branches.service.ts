@@ -1,6 +1,7 @@
 import { db } from '../models';
 import { GetBranchesResponse } from '../utils/interfaces';
 import { ResponseError } from '../middlewares/errorHandler';
+import { where } from 'sequelize';
 
 export class BranchService {
   async createBranch(branchName: string): Promise<number> {
@@ -54,9 +55,16 @@ export class BranchService {
       throw error;
     }
 
-    const updatedBranch = branch.update(branchId, {
-      branch_name: updatedBranchName,
-    });
+    const updatedBranch = await branch.update(
+      {
+        branch_name: updatedBranchName,
+      },
+      {
+        where: {
+          branch_id: branchId,
+        },
+      }
+    );
 
     if (!updatedBranch) {
       const error: ResponseError = new Error(`Ошибка обновления филиала`);
