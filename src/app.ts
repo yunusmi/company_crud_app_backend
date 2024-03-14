@@ -13,8 +13,6 @@ app.use(express.json());
 
 app.use(cors());
 
-app.use(routes);
-
 sequelize
   .sync()
   .then(() => {
@@ -29,6 +27,8 @@ app.use((req, res, next) => {
   console.log(`Новый запрос: ${req.method} - ${req.baseUrl}`);
   next();
 });
+
+app.use(routes);
 
 app.use((req, res, next) => {
   const error: ResponseError = new Error(

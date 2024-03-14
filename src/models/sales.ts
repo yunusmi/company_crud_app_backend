@@ -35,7 +35,7 @@ Sales.init(
   },
   {
     sequelize,
-    modelName: 'Sales',
+    modelName: 'sales',
     timestamps: false,
     createdAt: false,
     updatedAt: false,
