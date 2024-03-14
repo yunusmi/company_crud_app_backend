@@ -28,7 +28,9 @@ export class SalesController {
         sale_date,
         quantity
       );
-      res.status(201).json({ message: 'Продажа создана', sale_id: saleId });
+      res
+        .status(201)
+        .json({ message: 'Продажа успешно создана', sale_id: saleId });
     } catch (error) {
       console.log(error);
       next(error);
@@ -79,9 +81,10 @@ export class SalesController {
         sale_date,
         quantity
       );
-      res
-        .status(200)
-        .json({ message: 'Продажа обновлена', updated_rows: updatedRows });
+      res.status(200).json({
+        message: 'Запись продажи успешно обновлена',
+        updated_rows: updatedRows,
+      });
     } catch (error) {
       console.log(error);
       next(error);
@@ -98,7 +101,10 @@ export class SalesController {
       const deletedRows = await this.salesService.deleteSaleById(saleId);
       res
         .status(200)
-        .json({ message: 'Продажа удалена', deleted_rows: deletedRows });
+        .json({
+          message: 'Запись продажи успешно удалена',
+          deleted_rows: deletedRows,
+        });
     } catch (error) {
       console.log(error);
       next(error);

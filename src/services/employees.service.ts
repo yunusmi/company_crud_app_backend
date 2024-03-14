@@ -1,6 +1,10 @@
 import { db } from '../models';
 import { ResponseError } from '../middlewares/errorHandler';
-import { GetEmployeesResponse, GetOneEmployeeData } from '../utils/interfaces';
+import {
+  GetEmployeesResponse,
+  GetOneEmployeeData,
+  UpdateEmployeesResponse,
+} from '../utils/interfaces';
 import { sequelize } from '../connector/index';
 import { QueryTypes } from 'sequelize';
 
@@ -48,7 +52,9 @@ export class EmployeeService {
     const employeesData = await db.employees.findByPk(employeeId, {});
 
     if (!employeesData) {
-      const error: ResponseError = new Error('Сотрудник не найден');
+      const error: ResponseError = new Error(
+        `Сотрудник с таким ID ${employeeId} не найден`
+      );
       error.statusCode = 404;
       throw error;
     }
@@ -66,7 +72,9 @@ export class EmployeeService {
     });
 
     if (!employeesData) {
-      const error: ResponseError = new Error('Сотрудник не найден');
+      const error: ResponseError = new Error(
+        `Сотрудники с таким branch_id ${branchId} не найдены`
+      );
       error.statusCode = 404;
       throw error;
     }
@@ -79,7 +87,7 @@ export class EmployeeService {
     firstName: string,
     lastName: string,
     branchId: number
-  ): Promise<GetEmployeesResponse> {
+  ): Promise<UpdateEmployeesResponse> {
     const employee = await db.employees.findByPk(employeeId, {});
 
     if (!employee) {
@@ -90,11 +98,13 @@ export class EmployeeService {
       throw error;
     }
 
-    return await employee.update({
+    const updatedRows = await employee.update({
       first_name: firstName,
       last_name: lastName,
       branch_id: branchId,
     });
+
+    return updatedRows;
   }
 
   async deleteEmployeeById(employeeId: number): Promise<void> {

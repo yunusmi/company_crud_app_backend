@@ -1,0 +1,801 @@
+{
+  "swagger": "2.0",
+  "info": {
+    "title": "Документация API интерфейсов приложения",
+    "version": "1.0.0",
+    "description": ""
+  },
+  "host": "localhost:3001",
+  "basePath": "/",
+  "schemes": ["http"],
+  "consumes": ["application/json"],
+  "produces": ["application/json"],
+  "paths": {
+    "/api-docs/v1": {
+      "get": {
+        "tags": ["Swagger"],
+        "description": "Swagger документация API интерфейсов приложения",
+        "responses": {
+          "200": {
+            "description": "Возвращает список роутов с параметрами всех операций CRUD для каждого сервиса"
+          },
+          "500": {
+            "description": "Недоступно в production окружении"
+          }
+        }
+      }
+    },
+    "/api/v1/employees": {
+      "post": {
+        "tags": ["Сотрудники"],
+        "summary": "Создать нового сотрудника",
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "description": "Данные сотрудника",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/CreateEmployeeRequestBody"
+            }
+          }
+        ],
+        "responses": {
+          "201": {
+            "description": "Сотрудник успешно создан"
+          },
+          "500": {
+            "description": "Ошибка создания сотрудника"
+          }
+        }
+      },
+      "get": {
+        "tags": ["Сотрудники"],
+        "summary": "Получить всех сотрудников",
+        "responses": {
+          "200": {
+            "description": "Массив сотрудников"
+          },
+          "500": {
+            "description": "Ошибка получения данных"
+          }
+        }
+      }
+    },
+    "/api/v1/employees/{id}": {
+      "get": {
+        "tags": ["Сотрудники"],
+        "summary": "Получить сотрудника по ID",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "description": "ID сотрудника",
+            "required": true,
+            "type": "integer"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Сотрудник найден"
+          },
+          "404": {
+            "description": "Сотрудник с таким ID не найден"
+          },
+          "500": {
+            "description": "Ошибка сервера"
+          }
+        }
+      },
+      "put": {
+        "tags": ["Сотрудники"],
+        "summary": "Обновить данные сотрудника по ID",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "description": "ID сотрудника",
+            "required": true,
+            "type": "integer"
+          },
+          {
+            "name": "body",
+            "in": "body",
+            "description": "Данные сотрудника",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/UpdateEmployeeRequestBody"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Сотрудник успешно обновлен"
+          },
+          "404": {
+            "description": "Сотрудник с таким ID не найден"
+          },
+          "500": {
+            "description": "Ошибка сервера"
+          }
+        }
+      },
+      "delete": {
+        "tags": ["Сотрудники"],
+        "summary": "Удалить сотрудника по ID",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "description": "ID сотрудника",
+            "required": true,
+            "type": "integer"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Сотрудник успешно удален"
+          },
+          "404": {
+            "description": "Сотрудник с таким ID не найден"
+          },
+          "500": {
+            "description": "Ошибка сервера"
+          }
+        }
+      }
+    },
+    "/api/v1/branches/{id}/employees": {
+      "get": {
+        "tags": ["Сотрудники"],
+        "summary": "Получить сотрудников по ID филиала",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "description": "ID филиала",
+            "required": true,
+            "type": "integer"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Массив сотрудников"
+          },
+          "404": {
+            "description": "Сотрудники с таким branch_id не найдены"
+          },
+          "500": {
+            "description": "Ошибка сервера"
+          }
+        }
+      }
+    },
+    "/api/v1/products": {
+      "post": {
+        "tags": ["Товары"],
+        "summary": "Создание нового товара",
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/CreateProductRequestBody"
+            }
+          }
+        ],
+        "responses": {
+          "201": {
+            "description": "Товар успешно создан"
+          },
+          "500": {
+            "description": "Ошибка при создании товара"
+          }
+        }
+      },
+      "get": {
+        "tags": ["Товары"],
+        "summary": "Получение всех товаров",
+        "responses": {
+          "200": {
+            "description": "Успешный вывод массива товаров"
+          },
+          "500": {
+            "description": "Ошибка получения товаров"
+          }
+        }
+      }
+    },
+    "/api/v1/products/{id}": {
+      "get": {
+        "tags": ["Товары"],
+        "summary": "Получение товара по его ID",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "type": "integer"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Успешный вывод"
+          },
+          "404": {
+            "description": "Товар с таким ID не найден"
+          }
+        }
+      },
+      "put": {
+        "tags": ["Товары"],
+        "summary": "Обновление товара по его ID",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "type": "integer"
+          },
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/UpdateProductRequestBody"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Товар успешно обновлен"
+          },
+          "404": {
+            "description": "Товар с таким ID не найден"
+          },
+          "500": {
+            "description": "Ошибка сервера"
+          }
+        }
+      },
+      "delete": {
+        "tags": ["Товары"],
+        "summary": "Удаление товара по его ID",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "type": "integer"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Товар успешно удален"
+          },
+          "404": {
+            "description": "Товар с таким ID не найден"
+          },
+          "500": {
+            "description": "Ошибка сервера"
+          }
+        }
+      }
+    },
+    "/api/v1/branches/{id}/products": {
+      "get": {
+        "tags": ["Товары"],
+        "summary": "Получение товаров по ID филиала",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "type": "integer"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Успешный вывод товаров"
+          },
+          "404": {
+            "description": "Товары с таким branch_id не найден"
+          },
+          "500": {
+            "description": "Ошибка сервера"
+          }
+        }
+      }
+    },
+    "/api/v1/branches": {
+      "post": {
+        "tags": ["Филиалы"],
+        "summary": "Создать новый филиал",
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "description": "Данные филиала",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/CreateBranchRequestBody"
+            }
+          }
+        ],
+        "responses": {
+          "201": {
+            "description": "Филиал успешно создан"
+          },
+          "500": {
+            "description": "Ошибка создания филиала"
+          }
+        }
+      },
+      "get": {
+        "tags": ["Филиалы"],
+        "summary": "Получить все филиалы",
+        "responses": {
+          "200": {
+            "description": "Массив филиалов"
+          },
+          "500": {
+            "description": "Ошибка получения данных"
+          }
+        }
+      }
+    },
+    "/api/v1/branches/{id}": {
+      "get": {
+        "tags": ["Филиалы"],
+        "summary": "Получить филиал по ID",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "description": "ID филиала",
+            "required": true,
+            "type": "integer"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Филиал найден, успешный вывод данных"
+          },
+          "404": {
+            "description": "Филиал с таким ID не найден"
+          },
+          "500": {
+            "description": "Ошибка сервера"
+          }
+        }
+      },
+      "put": {
+        "tags": ["Филиалы"],
+        "summary": "Обновить данные филиала по ID",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "description": "ID филиала",
+            "required": true,
+            "type": "integer"
+          },
+          {
+            "name": "body",
+            "in": "body",
+            "description": "Данные филиала",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/UpdateBranchRequestBody"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Филиал успешно обновлен"
+          },
+          "404": {
+            "description": "Филиал с таким ID не найден"
+          },
+          "500": {
+            "description": "Ошибка обновления филиала"
+          }
+        }
+      },
+      "delete": {
+        "tags": ["Филиалы"],
+        "summary": "Удалить филиал по ID",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "description": "ID филиала",
+            "required": true,
+            "type": "integer"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Филиал успешно удален"
+          },
+          "404": {
+            "description": "Филиал с таким ID не найден"
+          },
+          "500": {
+            "description": "Ошибка удаления филиала"
+          }
+        }
+      }
+    },
+    "/api/v1/inventory": {
+      "post": {
+        "tags": ["Инвентаризация"],
+        "summary": "Создать новую запись инвентаря",
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "description": "Данные записи инвентаря",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/CreateInventoryRequestBody"
+            }
+          }
+        ],
+        "responses": {
+          "201": {
+            "description": "Запись инвентаря успешно создана"
+          },
+          "500": {
+            "description": "Ошибка создания инвентаря"
+          }
+        }
+      },
+      "get": {
+        "tags": ["Инвентаризация"],
+        "summary": "Получить все записи инвентаря",
+        "responses": {
+          "200": {
+            "description": "Массив записей инвентаря"
+          },
+          "500": {
+            "description": "Ошибка получения данных"
+          }
+        }
+      }
+    },
+    "/api/v1/inventory/{id}": {
+      "get": {
+        "tags": ["Инвентаризация"],
+        "summary": "Получить запись инвентаря по ID",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "description": "ID записи инвентаря",
+            "required": true,
+            "type": "integer"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Запись инвентаря найдена"
+          },
+          "404": {
+            "description": "Запись с таким ID не найдена"
+          },
+          "500": {
+            "description": "Ошибка сервера"
+          }
+        }
+      },
+      "put": {
+        "tags": ["Инвентаризация"],
+        "summary": "Обновить запись инвентаря по ID",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "description": "ID записи инвентаря",
+            "required": true,
+            "type": "integer"
+          },
+          {
+            "name": "body",
+            "in": "body",
+            "description": "Данные записи инвентаря",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/UpdateInventoryRequestBody"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Запись инвентаря успешно обновлена"
+          },
+          "404": {
+            "description": "Запись с таким ID не найдена"
+          },
+          "500": {
+            "description": "Ошибка сервера"
+          }
+        }
+      },
+      "delete": {
+        "tags": ["Инвентаризация"],
+        "summary": "Удалить запись инвентаря по ID",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "description": "ID записи инвентаря",
+            "required": true,
+            "type": "integer"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Запись инвентаря успешно удалена"
+          },
+          "404": {
+            "description": "Запись с таким ID не найдена"
+          },
+          "500": {
+            "description": "Ошибка сервера"
+          }
+        }
+      }
+    },
+    "/api/v1/sales": {
+      "post": {
+        "tags": ["Продажи"],
+        "summary": "Создать новую запись продажи",
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "description": "Данные записи продажи",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/CreateSaleRequestBody"
+            }
+          }
+        ],
+        "responses": {
+          "201": {
+            "description": "Продажа успешно создана"
+          },
+          "500": {
+            "description": "Ошибка создания записи продаж"
+          }
+        }
+      },
+      "get": {
+        "tags": ["Продажи"],
+        "summary": "Получить все записи продаж",
+        "responses": {
+          "200": {
+            "description": "Массив записей продаж"
+          },
+          "500": {
+            "description": "Ошибка получения записей продаж"
+          }
+        }
+      }
+    },
+    "/api/v1/sales/{id}": {
+      "get": {
+        "tags": ["Продажи"],
+        "summary": "Получить запись продажи по ID",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "description": "ID записи продажи",
+            "required": true,
+            "type": "integer"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Запись продажи найдена"
+          },
+          "404": {
+            "description": "Запись продажи не найдена"
+          },
+          "500": {
+            "description": "Ошибка сервера"
+          }
+        }
+      },
+      "put": {
+        "tags": ["Продажи"],
+        "summary": "Обновить запись продажи по ID",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "description": "ID записи продажи",
+            "required": true,
+            "type": "integer"
+          },
+          {
+            "name": "body",
+            "in": "body",
+            "description": "Данные записи продажи",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/UpdateSaleRequestBody"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Запись продажи успешно обновлена"
+          },
+          "404": {
+            "description": "Запись продажи не найдена"
+          },
+          "500": {
+            "description": "Ошибка сервера"
+          }
+        }
+      },
+      "delete": {
+        "tags": ["Продажи"],
+        "summary": "Удалить запись продажи по ID",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "description": "ID записи продажи",
+            "required": true,
+            "type": "integer"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Запись продажи успешно удалена"
+          },
+          "404": {
+            "description": "Запись продажи не найдена"
+          },
+          "500": {
+            "description": "Ошибка сервера"
+          }
+        }
+      }
+    }
+  },
+  "definitions": {
+    "CreateEmployeeRequestBody": {
+      "type": "object",
+      "properties": {
+        "first_name": {
+          "type": "string"
+        },
+        "last_name": {
+          "type": "string"
+        },
+        "branch_id": {
+          "type": "integer"
+        }
+      }
+    },
+    "UpdateEmployeeRequestBody": {
+      "type": "object",
+      "properties": {
+        "first_name": {
+          "type": "string"
+        },
+        "last_name": {
+          "type": "string"
+        },
+        "branch_id": {
+          "type": "integer"
+        }
+      }
+    },
+    "CreateProductRequestBody": {
+      "type": "object",
+      "properties": {
+        "product_name": {
+          "type": "string"
+        },
+        "price": {
+          "type": "number"
+        },
+        "branch_id": {
+          "type": "integer"
+        }
+      }
+    },
+    "UpdateProductRequestBody": {
+      "type": "object",
+      "properties": {
+        "product_name": {
+          "type": "string"
+        },
+        "price": {
+          "type": "number"
+        },
+        "branch_id": {
+          "type": "integer"
+        }
+      }
+    },
+    "CreateBranchRequestBody": {
+      "type": "object",
+      "properties": {
+        "branch_name": {
+          "type": "string"
+        }
+      }
+    },
+    "UpdateBranchRequestBody": {
+      "type": "object",
+      "properties": {
+        "branch_name": {
+          "type": "string"
+        }
+      }
+    },
+    "CreateInventoryRequestBody": {
+      "type": "object",
+      "properties": {
+        "product_id": {
+          "type": "integer"
+        },
+        "quantity_in_stock": {
+          "type": "integer"
+        }
+      }
+    },
+    "UpdateInventoryRequestBody": {
+      "type": "object",
+      "properties": {
+        "quantity_in_stock": {
+          "type": "integer"
+        }
+      }
+    },
+    "CreateSaleRequestBody": {
+      "type": "object",
+      "properties": {
+        "product_id": {
+          "type": "integer"
+        },
+        "employee_id": {
+          "type": "integer"
+        },
+        "sale_date": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "quantity": {
+          "type": "integer"
+        }
+      }
+    },
+    "UpdateSaleRequestBody": {
+      "type": "object",
+      "properties": {
+        "product_id": {
+          "type": "integer"
+        },
+        "employee_id": {
+          "type": "integer"
+        },
+        "sale_date": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "quantity": {
+          "type": "integer"
+        }
+      }
+    }
+  }
+}

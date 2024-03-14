@@ -49,8 +49,8 @@ export class SalesService {
   async getSaleById(saleId: number): Promise<GetSalesResponse> {
     const sale = await db.sales.findByPk(saleId, {});
     if (!sale) {
-      const error: ResponseError = new Error('Ошибка получения записей продаж');
-      error.statusCode = 500;
+      const error: ResponseError = new Error('Запись продажи не найдена');
+      error.statusCode = 404;
       throw error;
     }
 
@@ -66,8 +66,8 @@ export class SalesService {
   ): Promise<UpdateSaleResponse> {
     const sale = await db.sales.findByPk(saleId, {});
     if (!sale) {
-      const error: ResponseError = new Error('Ошибка обновления записи продаж');
-      error.statusCode = 500;
+      const error: ResponseError = new Error('Запись продажи не найдена');
+      error.statusCode = 404;
       throw error;
     }
 
@@ -90,7 +90,7 @@ export class SalesService {
   async deleteSaleById(saleId: number): Promise<void> {
     const sale = await db.sales.findByPk(saleId, {});
     if (!sale) {
-      const error: ResponseError = new Error('Ошибка удаления записи продаж');
+      const error: ResponseError = new Error('Запись продажи не найдена');
       error.statusCode = 500;
       throw error;
     }

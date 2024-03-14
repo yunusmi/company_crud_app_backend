@@ -53,6 +53,8 @@ export interface GetEmployeesResponse {
   branch_name?: string;
 }
 
+export interface UpdateEmployeesResponse extends GetEmployeesResponse {}
+
 export interface UpdateEmployeeRequestBody {
   first_name: string;
   last_name: string;

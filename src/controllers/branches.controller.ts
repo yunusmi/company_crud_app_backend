@@ -21,7 +21,9 @@ export class BranchController {
     try {
       const branchName = req.body.branch_name;
       const branchId = await this.branchService.createBranch(branchName);
-      res.status(201).json({ message: 'Филиал создан', branch_id: branchId });
+      res
+        .status(201)
+        .json({ message: 'Филиал успешно создан', branch_id: branchId });
     } catch (error) {
       console.log(error);
       next(error);
@@ -66,7 +68,7 @@ export class BranchController {
       const branchId = req.params.id;
       const updatedBranchName = req.body.branch_name;
       await this.branchService.updateBranchById(branchId, updatedBranchName);
-      res.status(200).json({ message: 'Филиал обновлен' });
+      res.status(200).json({ message: 'Филиал успешно обновлен' });
     } catch (error) {
       console.log(error);
       next(error);
@@ -81,7 +83,7 @@ export class BranchController {
     try {
       const branchId = req.params.id;
       await this.branchService.deleteBranchById(branchId);
-      res.status(200).json({ message: 'Филиал удален' });
+      res.status(200).json({ message: 'Филиал успешно удален' });
     } catch (error) {
       console.log(error);
       next(error);
