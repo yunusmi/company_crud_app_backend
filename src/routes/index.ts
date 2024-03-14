@@ -5,12 +5,23 @@ import { branchesRouter } from './branches.router';
 import { inventoryRouter } from './inventory.router';
 import { salesRouter } from './sales.router';
 
+import swaggerUi from 'swagger-ui-express';
+import swaggerDocument from '../utils/swagger-output.json';
+
 const router = Router();
 
-router.use('/api', employeesRouter);
-router.use('/api', productsRouter);
-router.use('/api', branchesRouter);
-router.use('/api', inventoryRouter);
-router.use('/api', salesRouter);
+router.use('/api/v1', employeesRouter);
+router.use('/api/v1', productsRouter);
+router.use('/api/v1', branchesRouter);
+router.use('/api/v1', inventoryRouter);
+router.use('/api/v1', salesRouter);
+
+if (process.env.NODE_ENV !== 'production') {
+  router.use('/api-docs/v1', swaggerUi.serve, swaggerUi.setup(swaggerDocument));
+} else {
+  router.get('/api-docs/v1', (req, res, next) => {
+    next(req);
+  });
+}
 
 export { router as routes };

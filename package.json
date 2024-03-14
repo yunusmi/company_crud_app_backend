@@ -13,7 +13,8 @@
     "db:seed:all:production": "cross-env NODE_ENV=production ts-node ./node_modules/sequelize-cli/lib/sequelize db:seed:all",
     "db:seed:undo:production": "cross-env NODE_ENV=production ts-node ./node_modules/sequelize-cli/lib/sequelize db:seed:undo:all",
     "db:migrate:up:production": "cross-env NODE_ENV=production ts-node ./node_modules/sequelize-cli/lib/sequelize db:migrate",
-    "db:migrate:undo:production": "cross-env NODE_ENV=production ts-node ./node_modules/sequelize-cli/lib/sequelize db:migrate:undo:all"
+    "db:migrate:undo:production": "cross-env NODE_ENV=production ts-node ./node_modules/sequelize-cli/lib/sequelize db:migrate:undo:all",
+    "generate-swagger-document": "ts-node ./src/utils/swagger"
   },
   "dependencies": {
     "body-parser": "^1.20.2",

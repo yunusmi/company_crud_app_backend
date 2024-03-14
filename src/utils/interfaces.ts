@@ -110,3 +110,18 @@ export interface GetSalesResponse extends CreateSaleRequestBody {
 }
 
 export interface UpdateSaleResponse extends GetSalesResponse {}
+
+export interface SwaggerDefinition {
+  parameters: any;
+  in: string;
+  name: string;
+  type: string | number;
+  required: boolean;
+  description: string;
+}
+
+export interface SwaggerPaths {
+  [path: string]: {
+    [method: string]: SwaggerDefinition;
+  };
+}
