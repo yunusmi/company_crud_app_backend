@@ -36,7 +36,9 @@ export class SalesService {
   }
 
   async getAllSales(): Promise<GetSalesResponse[]> {
-    const sales = await db.sales.findAll();
+    const sales = await db.sales.findAll({
+      order: [['sale_id', 'DESC']],
+    });
     if (!sales) {
       const error: ResponseError = new Error('Ошибка получения записей продаж');
       error.statusCode = 500;
