@@ -117,9 +117,7 @@ export class ProductController {
       const deletedRows = await this.productService.deleteProductById(
         productId
       );
-      res
-        .status(200)
-        .json({ message: 'Товар успешно удален', deleted_rows: deletedRows });
+      res.status(200).json({ message: 'Товар успешно удален', deletedRows });
     } catch (error) {
       console.log(error);
       next(error);

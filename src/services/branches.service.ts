@@ -1,7 +1,6 @@
 import { db } from '../models';
 import { GetBranchesResponse } from '../utils/interfaces';
 import { ResponseError } from '../middlewares/errorHandler';
-import { where } from 'sequelize';
 
 export class BranchService {
   async createBranch(branchName: string): Promise<number> {

@@ -2,8 +2,8 @@ import { DataTypes, Model } from 'sequelize';
 import { sequelize } from '../connector';
 
 class Branches extends Model {
-  public branch_id!: number;
-  public branch_name!: string;
+  declare branch_id: number;
+  declare branch_name: string;
 }
 
 Branches.init(

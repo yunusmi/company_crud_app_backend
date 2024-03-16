@@ -2,9 +2,9 @@ import { DataTypes, Model } from 'sequelize';
 import { sequelize } from '../connector';
 
 class Inventories extends Model {
-  public inventory_id!: number;
-  public product_id!: number;
-  public quantity_in_stock!: number;
+  declare inventory_id: number;
+  declare product_id: number;
+  declare quantity_in_stock: number;
 }
 
 Inventories.init(
