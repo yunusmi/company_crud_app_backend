@@ -5,13 +5,13 @@ module.exports = {
     await queryInterface.bulkInsert(
       'branches',
       [
-        { branch_name: 'Филиал 1' },
-        { branch_name: 'Филиал 2' },
-        { branch_name: 'Филиал 3' },
-        { branch_name: 'Филиал 4' },
-        { branch_name: 'Филиал 5' },
-        { branch_name: 'Филиал 6' },
-        { branch_name: 'Филиал 7' },
+        { branch_name: 'Магазин посуды' },
+        { branch_name: 'Магазин "Овощная"' },
+        { branch_name: 'Магазин "Винная & Сладости"' },
+        { branch_name: 'Магазин "Уют для дома"' },
+        { branch_name: 'Магазин "Фруктовый сад"' },
+        { branch_name: 'Магазин одежды' },
+        { branch_name: 'Головной офис' },
       ],
       {}
     );
