@@ -2,10 +2,10 @@ import { DataTypes, Model } from 'sequelize';
 import { sequelize } from '../connector';
 
 class Employees extends Model {
-  public employee_id!: number;
-  public first_name!: string;
-  public last_name!: string;
-  public branch_id!: number;
+  declare employee_id: number;
+  declare first_name: string;
+  declare last_name: string;
+  declare branch_id: number;
 }
 
 Employees.init(

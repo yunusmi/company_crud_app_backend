@@ -2,11 +2,11 @@ import { DataTypes, Model } from 'sequelize';
 import { sequelize } from '../connector';
 
 class Sales extends Model {
-  public sale_id!: number;
-  public product_id!: number;
-  public employee_id!: number;
-  public sale_date!: string;
-  public quantity!: number;
+  declare sale_id: number;
+  declare product_id: number;
+  declare employee_id: number;
+  declare sale_date: string;
+  declare quantity: number;
 }
 
 Sales.init(

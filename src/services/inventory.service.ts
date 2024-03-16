@@ -1,4 +1,4 @@
-import { Op, where } from 'sequelize';
+import { Op } from 'sequelize';
 import { db } from '../models';
 import { ResponseError } from '../middlewares/errorHandler';
 import {
