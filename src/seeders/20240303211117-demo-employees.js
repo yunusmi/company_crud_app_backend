@@ -21,12 +21,12 @@ module.exports = {
           employee_id: 27,
           first_name: 'Юнус',
           last_name: 'Ашыров',
-          branch_id: 5,
+          branch_id: 7,
         },
         {
           employee_id: 28,
           first_name: 'Марина',
-          last_name: 'Светлакова',
+          last_name: 'Ивченко',
           branch_id: 1,
         },
         {
@@ -51,7 +51,7 @@ module.exports = {
           employee_id: 32,
           first_name: 'Тельман',
           last_name: 'Гасанов',
-          branch_id: 2,
+          branch_id: 7,
         },
         {
           employee_id: 33,
