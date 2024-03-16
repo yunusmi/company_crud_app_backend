@@ -6,7 +6,7 @@
   "scripts": {
     "start:development": "cross-env NODE_ENV=development nodemon --esm --files ./src/app.ts",
     "start:production": "npx cross-env NODE_ENV=production pm2 start ./dist/app.js",
-    "stop:production": "npx cross-env NODE_ENV=production pm2 stop ./dist/app.js",
+    "stop:production": "npx pm2 stop ./dist/app.js",
     "log": "npx pm2 log",
     "db:seed:all:development": "cross-env NODE_ENV=development ts-node ./node_modules/sequelize-cli/lib/sequelize db:seed:all",
     "db:seed:undo:development": "cross-env NODE_ENV=development ts-node ./node_modules/sequelize-cli/lib/sequelize db:seed:undo:all",
