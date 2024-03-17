@@ -33,7 +33,7 @@ export class EmployeeService {
     const getEmployeesDataQuery = `
       SELECT employees.*, branches.branch_name
       FROM employees
-      JOIN branches ON employees.branch_id = branches.branch_id`;
+      JOIN branches ON employees.branch_id = branches.branch_id ORDER BY branch_id DESC`;
 
     const employeesData = await sequelize.query(getEmployeesDataQuery, {
       type: QueryTypes.SELECT,
@@ -66,6 +66,7 @@ export class EmployeeService {
     branchId: number
   ): Promise<GetEmployeesResponse[]> {
     const employeesData = await db.employees.findAll({
+      order: [['branch_id', 'DESC']],
       where: {
         branch_id: branchId,
       },

@@ -17,7 +17,9 @@ export class BranchService {
   }
 
   async getAllBranches(): Promise<GetBranchesResponse[]> {
-    const branches = await db.branches.findAll();
+    const branches = await db.branches.findAll({
+      order: [['branch_id', 'DESC']],
+    });
     if (!branches) {
       const error: ResponseError = new Error('Ошибка получения данных');
       error.statusCode = 500;
