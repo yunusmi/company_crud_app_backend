@@ -5,7 +5,7 @@
 <h2>Используемые технологии:</h2>
 <ul>
   <li><strong>NodeJS</strong></li>
-  <li><strong>Express</strong>  фреймвор</li>
+  <li><strong>Express</strong> фреймворк</li>
   <li><strong>TypeScript</strong></li>
   <li><strong>ORM</strong>: Sequelize</li>
   <li><strong>База данных</strong>: MySQL</li>

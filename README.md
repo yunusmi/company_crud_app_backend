@@ -1,3 +1,5 @@
+<p>Документация <b>на русском</b> <a href="https://github.com/yunusmi/company_crud_app_backend/blob/master/README_RU.md">здесь</a></p>
+
 <h1>BackEnd server for company data management</h1>
 
 <p>This application is a BackEnd server for managing company data such as employees, sales, products, branches, and inventory. The FrontEnd part is available <a href="https://github.com/yunusmi/company_crud_app_front_end/blob/master/README.md">here</a>.</p>
