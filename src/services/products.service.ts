@@ -42,7 +42,9 @@ export class ProductService {
   }
 
   async getAllProducts(): Promise<GetProductsResponse[]> {
-    const products = await db.products.findAll();
+    const products = await db.products.findAll({
+      order: [['branch_id', 'DESC']],
+    });
 
     if (!products) {
       const error: ResponseError = new Error('Ошибка получения товаров');
