@@ -9,7 +9,7 @@
   <li><strong>TypeScript</strong></li>
   <li><strong>ORM</strong>: Sequelize</li>
   <li><strong>База данных</strong>: MySQL</li>
-  <li><strong>Документация API</strong>: Swagger (доступна по URI: /api-docs/v1)</li>
+  <li><strong>Документация API</strong>: Swagger (доступна на development окружении по URI: /api-docs/v1)</li>
 </ul>
 
 <p>Клиент и сервер взаимодействуют между собой по протоколу HTTP, архитектурным стилем REST API в формате JSON.</p>

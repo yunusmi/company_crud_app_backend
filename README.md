@@ -11,7 +11,7 @@
   <li><strong>TypeScript</strong></li>
   <li><strong>ORM</strong>: Sequelize</li>
   <li><strong>Database</strong>: MySQL</li>
-  <li><strong>API Documentation</strong>: Swagger (available at URI: /api-docs/v1)</li>
+  <li><strong>API Documentation</strong>: Swagger (available on development environment at URI: /api-docs/v1)</li>
 </ul>
 
 <p>The client and server communicate with each other via the HTTP protocol, using the REST API architectural style in JSON format.</p>
