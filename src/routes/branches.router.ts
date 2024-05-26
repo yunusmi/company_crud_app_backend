@@ -2,7 +2,8 @@ import { Router } from 'express';
 import { BranchController } from '../controllers/branches.controller';
 import { BranchService } from '../services/branches.service';
 
-const branchController = new BranchController(new BranchService());
+const branchService = new BranchService();
+const branchController = new BranchController(branchService);
 
 const branchesRouter = Router();
 

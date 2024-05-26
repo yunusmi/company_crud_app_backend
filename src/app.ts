@@ -14,7 +14,7 @@ app.use(express.json());
 app.use(cors());
 
 sequelize
-  .sync()
+  .sync({ force: false })
   .then(() => {
     console.log('Соединение с базой данный установлено');
   })

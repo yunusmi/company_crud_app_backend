@@ -1,8 +1,13 @@
 import { Router } from 'express';
 import { ProductController } from '../controllers/products.controller';
 import { ProductService } from '../services/products.service';
+import { InventoryService } from '../services/inventory.service';
 
-const productController = new ProductController(new ProductService());
+const inventoryService = new InventoryService();
+const productService = new ProductService(inventoryService);
+
+const productController = new ProductController(productService);
+
 const productsRouter = Router();
 
 productsRouter.post(
