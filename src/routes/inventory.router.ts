@@ -2,7 +2,9 @@ import { Router } from 'express';
 import { InventoryController } from '../controllers/inventory.controller';
 import { InventoryService } from '../services/inventory.service';
 
-const inventoryController = new InventoryController(new InventoryService());
+const inventoryService = new InventoryService();
+const inventoryController = new InventoryController(inventoryService);
+
 const inventoryRouter = Router();
 
 inventoryRouter.post(

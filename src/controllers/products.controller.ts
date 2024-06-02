@@ -21,12 +21,11 @@ export class ProductController {
     next: NextFunction
   ): Promise<void> {
     try {
-      const defaultProductQuantity = 100;
-      const { product_name, price, branch_id } = req.body;
+      const { product_name, price, quantity_in_stock, branch_id } = req.body;
       const productId = await this.productService.createProduct(
-        defaultProductQuantity,
         product_name,
         price,
+        quantity_in_stock,
         branch_id
       );
       res
@@ -91,11 +90,12 @@ export class ProductController {
   ): Promise<void> {
     try {
       const productId = req.params.id;
-      const { product_name, price, branch_id } = req.body;
+      const { product_name, price, quantity_in_stock, branch_id } = req.body;
       const updatedRows = await this.productService.updateProductById(
         productId,
         product_name,
         price,
+        quantity_in_stock,
         branch_id
       );
       res

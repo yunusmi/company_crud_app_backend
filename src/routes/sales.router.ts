@@ -6,6 +6,7 @@ import { InventoryService } from '../services/inventory.service';
 const inventoryService = new InventoryService();
 const salesService = new SalesService(inventoryService);
 const salesController = new SalesController(salesService);
+
 const salesRouter = Router();
 
 salesRouter.post('/sales', salesController.createSale.bind(salesController));
