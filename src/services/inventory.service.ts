@@ -190,16 +190,13 @@ export class InventoryService {
     excistingSaledProductQtyOnDB: number,
     productSaledQtyNow: number
   ): Promise<number> {
-    const transaction = await db.sequelize.transaction();
     const productSales = await db.inventories.findOne({
       where: {
         product_id: productId,
       },
-      transaction,
     });
 
     if (!productSales) {
-      await transaction.rollback();
       const error: ResponseError = new Error(
         `Товар с таким ID ${productId} не найден`
       );
@@ -223,19 +220,17 @@ export class InventoryService {
           product_id: productId,
           inventory_id: inventoryId,
         },
-        transaction,
       }
     );
 
     if (!updatedRows) {
-      await transaction.rollback();
       await returnException('Ошибка обновления записи продаж и остатков', 500);
     }
 
-    await transaction.commit();
-
     const redis = await createRedisConnection();
     await this.deleteCachedData(redis, inventoryId);
+
+    await this.deleteProductCachedData(redis, productId);
 
     await redis.set(
       `inventory:${inventoryId}`,
@@ -286,6 +281,27 @@ export class InventoryService {
         if (!deleteCachedData) {
           await returnException(`Ошибка Redis`, 500);
         }
+      }
+    }
+
+    return;
+  }
+
+  async deleteProductCachedData(
+    redis: RedisClientType<
+      RedisMethodsInterface & RedisModules,
+      RedisFunctions,
+      RedisScripts
+    >,
+    productId?: number
+  ): Promise<void> {
+    const cachedOneProductDataExcists = await redis.get(`product:${productId}`);
+
+    if (cachedOneProductDataExcists || cachedOneProductDataExcists !== null) {
+      const deleteCachedData = await redis.del(`product:${productId}`);
+
+      if (!deleteCachedData) {
+        await returnException(`Ошибка Redis`, 500);
       }
     }
 

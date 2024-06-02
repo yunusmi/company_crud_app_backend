@@ -25,18 +25,16 @@ export class ProductService {
     quantityInStock: number,
     branchId: number
   ): Promise<number> {
-    const transaction = await db.sequelize.transaction();
-    const { product_id: productId } = await db.products.create(
-      {
-        product_name: productName,
-        price: price,
-        branch_id: branchId,
-      },
-      { transaction }
-    );
+    const insertProduct = await db.products.create({
+      product_name: productName,
+      price: price,
+      branch_id: branchId,
+    });
+
+    const productId = insertProduct.dataValues.product_id;
 
     if (!productId) {
-      await transaction.rollback();
+      await insertProduct.destroy();
       await returnException('Ошибка при создании товара', 500);
     }
 
@@ -46,11 +44,9 @@ export class ProductService {
     );
 
     if (!inventoryId) {
-      await transaction.rollback();
+      await insertProduct.destroy();
       await returnException('Ошибка при создании записи в инвентаре', 500);
     }
-
-    await transaction.commit();
 
     const redis = await createRedisConnection();
     await this.deleteCachedData(redis);
@@ -62,6 +58,7 @@ export class ProductService {
         product_name: productName,
         price: price,
         branch_id: branchId,
+        quantity_in_stock: quantityInStock,
       }),
       {
         EX: dataLiveTime,
@@ -111,17 +108,42 @@ export class ProductService {
         );
       }
 
-      await redis.set(`product:${productId}`, JSON.stringify(product), {
+      const productQty = await this.getProductQtyByProductId(productId);
+
+      const productData = {
+        ...product?.dataValues,
+        quantity_in_stock: productQty,
+      };
+
+      await redis.set(`product:${productId}`, JSON.stringify(productData), {
         EX: dataLiveTime,
         NX: true,
       });
 
       await redis.quit();
-      return product;
+      return productData;
     }
 
     await redis.quit();
     return JSON.parse(productCached);
+  }
+
+  async getProductQtyByProductId(productId: number): Promise<number> {
+    const productQty = await db.inventories.findOne({
+      where: {
+        product_id: productId,
+      },
+    });
+
+    if (!productQty) {
+      const error: ResponseError = new Error(
+        `Запись инвентаря с таким ID ${productId} не найден`
+      );
+      error.statusCode = 404;
+      throw error;
+    }
+
+    return productQty.dataValues.quantity_in_stock;
   }
 
   async getProductsByBranchId(
@@ -187,7 +209,7 @@ export class ProductService {
     const updatedRows = await product.update({
       product_name: productName,
       price: price,
-      branc_id: branchId,
+      branch_id: branchId,
     });
 
     if (!updatedRows) {
@@ -207,6 +229,7 @@ export class ProductService {
         product_name: productName,
         price: price,
         branch_id: branchId,
+        quantity_in_stock: quantityInStock,
       }),
       {
         EX: dataLiveTime,
